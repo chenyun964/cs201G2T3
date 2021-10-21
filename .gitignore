@@ -27,3 +27,4 @@ cs201/target/**
 /backend/pandanews/src/main/resources/application.properties
 admin/package-lock.json
 /target/
+/cs201/target/
