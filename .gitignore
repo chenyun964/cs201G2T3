@@ -21,7 +21,9 @@ build/
 ### VS Code ###
 .vscode/
 
+cs201/target/**
+
 ### Resource files ###
 /backend/pandanews/src/main/resources/application.properties
 admin/package-lock.json
-*.jar
+/target/
