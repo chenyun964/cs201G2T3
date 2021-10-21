@@ -3,6 +3,12 @@ package sg.edu.smu.app;
 import javax.swing.*;
 import java.awt.*;
 
+import java.io.File;
+
+import org.apache.commons.io.FileUtils;
+import org.json.JSONObject;
+import org.json.JSONArray;
+
 public class TestApplication {
     public static void main(String[] args) {
         // Creating the Frame
