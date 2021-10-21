@@ -21,7 +21,7 @@ build/
 ### VS Code ###
 .vscode/
 
-target/**
+cs201/target/**
 
 ### Resource files ###
 /backend/pandanews/src/main/resources/application.properties
