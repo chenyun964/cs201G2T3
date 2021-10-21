@@ -24,7 +24,6 @@ build/
 cs201/target/**
 
 ### Resource files ###
-/backend/pandanews/src/main/resources/application.properties
 admin/package-lock.json
 /target/
 /cs201/target/
