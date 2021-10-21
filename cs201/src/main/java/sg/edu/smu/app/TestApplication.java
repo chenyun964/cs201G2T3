@@ -3,11 +3,13 @@ package sg.edu.smu.app;
 import javax.swing.*;
 import java.awt.*;
 
-import java.io.File;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
-import org.apache.commons.io.FileUtils;
-import org.json.JSONObject;
-import org.json.JSONArray;
+import java.io.FileReader;
+import java.io.Reader;
+import java.util.Iterator;
 
 public class TestApplication {
     public static void main(String[] args) {
@@ -39,20 +41,25 @@ public class TestApplication {
         frame.setVisible(true);
 
         System.out.println("Hello world");
-        File file = new File("data.json");
 
-        try {
-            String content = FileUtils.readFileToString(file, "utf-8");
-            JSONObject tomJsonObject = new JSONObject(content);
-            JSONArray users = tomJsonObject.getJSONArray("users");
+        JSONParser parser = new JSONParser();
 
-            for (int i = 0; i < users.length(); i++) {
-                String user = (String) users.get(i);
-                System.out.println(user);
+        try (Reader reader = new FileReader("data.json")) {
+
+            JSONArray users = (JSONArray) parser.parse(reader);
+            for (Object u : users)
+            {
+              JSONObject user = (JSONObject) u;
+          
+              String name = (String) user.get("user_id");
+              System.out.println(name);
+          
+              String city = (String) user.get("friends");
+              System.out.println(city);
+
             }
-
         } catch (Exception e) {
-            System.out.println(e);
-        }
+            e.printStackTrace();
+        } 
     }
 }
