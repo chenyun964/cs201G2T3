@@ -11,6 +11,9 @@ Compile codes into package and really for launches
 Run the compiled package and launches the application
 
 ### `mvn install` 
-### `mvn clean install`
 
 To install the dependencies in the POM.XML
+
+### `mvn clean install`
+
+Clear all installed dependencies and re-install the dependencies in the POM.XML
