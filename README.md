@@ -12,7 +12,7 @@ Run the compiled package and launches the application
 
 ### `mvn install` 
 
-To install the dependencies in the POM.XML
+Install the dependencies included in the POM.XML
 
 ### `mvn clean install`
 
