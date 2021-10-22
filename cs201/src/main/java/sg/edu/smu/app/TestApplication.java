@@ -58,13 +58,8 @@ public class TestApplication {
             JSONArray users = (JSONArray) parser.parse(reader);
             for (Object u : users) {
                 JSONObject user = (JSONObject) u;
-
-                String name = (String) user.get("user_id");
-                System.out.println(name);
-
-                String city = (String) user.get("friends");
-                System.out.println(city);
-
+                String user_id = (String) user.get("user_id");
+                String friends = (String) user.get("friends");
             }
         } catch (Exception e) {
             e.printStackTrace();
