@@ -1,6 +1,6 @@
 # cs201G2T3
 
-In the project directory (/cs201), you can run:
+In the project directory **(/cs201)**, you can run:
 
 ### `mvn package`
 
