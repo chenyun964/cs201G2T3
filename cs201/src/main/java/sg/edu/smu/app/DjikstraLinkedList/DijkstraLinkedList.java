@@ -21,7 +21,7 @@ public class DijkstraLinkedList {
   private Set<Integer> visited;
   private PriorityQueue<Node> pq;
   // private LinkedList<Node> ll;
-
+  
   public DijkstraLinkedList(int numVertices) {
     this.numVertices = numVertices;
     this.distArr = new int[numVertices + 1];
@@ -145,14 +145,25 @@ public class DijkstraLinkedList {
 
     SortedLinkedList linkedList = new SortedLinkedList();
     linkedList.add(new Node(1, 1));
-    linkedList.add(new Node(3, 3));
-    linkedList.add(new Node(0, 0));
-    linkedList.add(new Node(5, 5));
-    linkedList.add(new Node(2, 2));
-    linkedList.add(new Node(7, 7));
-    linkedList.add(new Node(8, 8));
-    System.out.println(linkedList.toString2());
-    System.out.println(linkedList.size());
+    System.out.println(linkedList.toString());
+    linkedList.add(new Node(2, 1));
+    System.out.println(linkedList.toString());
+    linkedList.add(new Node(3, 1));
+    System.out.println(linkedList.toString());
+    linkedList.add(new Node(4, 2));
+    System.out.println(linkedList.toString());
+    linkedList.add(new Node(5, 2));
+    System.out.println(linkedList.toString());
+    linkedList.add(new Node(6, 2));
+    System.out.println(linkedList.toString());
+    linkedList.add(new Node(7, 3));
+    System.out.println(linkedList.toString());
+    linkedList.removeMin();
+    linkedList.removeMin();
+    linkedList.removeMin();
+    linkedList.removeMin();
+    linkedList.removeMin();
+    linkedList.removeMin();
     linkedList.removeMin();
     System.out.println(linkedList.toString());
     System.out.println(linkedList.size());
@@ -167,10 +178,8 @@ public class DijkstraLinkedList {
 class Node implements Comparator<Node> {
 
   // Member variables of this class
-  public int node;
-  public int cost;
-  private Node prev;
-  private Node next;
+  public int node, cost;
+  private Node prev, next;
 
   public Node() {
   }
@@ -208,12 +217,12 @@ class Node implements Comparator<Node> {
 }
 
 /**
- * None Pointer doubly linked list
+ * A sorted linkedlist of Nodes
  */
 class SortedLinkedList {
-  private Node header;
-  private Node trailer;
+  private Node header, trailer;
   private int size = 0;
+  private HashMap<Integer, Node> map = new HashMap<Integer, Node>();
 
   public SortedLinkedList() {
     header = new Node(Integer.MAX_VALUE - 1, 0);
@@ -235,16 +244,23 @@ class SortedLinkedList {
    * @param node
    */
   public void add(Node node) {
-    Node current = header.getNext();
-    // potentially o(n)
-    while (node.cost >= current.cost) { // loop until first elem that is greater than node
-      current = current.getNext();
+    if (map.containsKey(node.cost)) { // worst case o(n)
+      Node current = map.get(node.cost);
+      node.setPrev(current);
+      node.setNext(current.getNext());
+      current.getNext().setPrev(node);
+      current.setNext(node);
+    } else { // potentially o(n)
+      Node current = header.getNext();
+      while (node.cost >= current.cost)
+        current = current.getNext();
+      current.getPrev().setNext(node);
+      node.setPrev(current.getPrev());
+      current.setPrev(node);
+      node.setNext(current);
     }
-    current.getPrev().setNext(node);
-    node.setPrev(current.getPrev());
-    current.setPrev(node);
-    node.setNext(current);
     this.size++;
+    map.put(node.cost, node);
   }
 
   /**
@@ -257,30 +273,20 @@ class SortedLinkedList {
   }
 
   public Node min() {
-    if (isEmpty()) {
+    if (isEmpty())
       return null;
-    }
     return header.getNext();
-  }
-
-  public Node max() {
-    if (isEmpty()) {
-      return null;
-    }
-    return trailer.getPrev();
   }
 
   public Node removeMin() {
     if (isEmpty())
       return null;
-
     Node current = header.getNext();
     header.setNext(current.getNext());
     current.getNext().setPrev(header);
     current.setNext(null);
     current.setPrev(null);
     this.size--;
-
     return current;
   }
 
