@@ -2,6 +2,10 @@
 
 In the project directory **(/cs201)**, you can run:
 
+### Install Maven
+
+Install maven using homebrew `brew install maven`
+
 ### `mvn package`
 
 Compile codes into package and really for launches
