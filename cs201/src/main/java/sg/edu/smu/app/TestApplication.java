@@ -78,7 +78,7 @@ public class TestApplication {
     public static void main(String[] args) {
         // TestApplication app = new TestApplication();
         // app.createUI();
-
+        Double divider = 1000000000.0;
         System.out.println("Load Date...");
         JSONParser parser = new JSONParser();
         JSONArray users = null;
@@ -88,9 +88,14 @@ public class TestApplication {
             e.printStackTrace();
         }
 
+        // Key: unique integer
+        // Value: user_id
         HashMap<Integer, String> mapList = new HashMap<>();
-        Graph<Integer, Integer> g = new AdjacencyMapGraph<>(false);
+        // Key: user_id
+        // Value: unique integer
         HashMap<String, Vertex<Integer>> verts = new HashMap<>();
+
+        Graph<Integer, Integer> g = new AdjacencyMapGraph<>(false);
 
         TreeSet<String> labels = getLabels(users);
         Integer n = 0;
@@ -103,8 +108,9 @@ public class TestApplication {
         g = generateAdjacencyMapGraphFromData(users, g, verts);
         long endTime = System.nanoTime();
         long totalTime = endTime - startTime;
-        System.out.println("Time to Load Graph: " + totalTime / 1000000000.0 + "s");
-
+        System.out.println("Time to Load Graph: " + totalTime / divider + "s");
+        System.out.println();
+        
         // Test input
         // From: "zzrA6bRsAxj_qXui0SyBwQ"
         // To: "PZW77I6qXeM0RQjo1kGBUg"
@@ -123,20 +129,19 @@ public class TestApplication {
 
         long endTime2 = System.nanoTime();
         long totalTime2 = endTime2 - startTime2;
-        System.out.println("Time to Compute Path: " + totalTime2 / 1000000000.0 + "s");
+        System.out.println("Time to Compute Path: " + totalTime2 / divider + "s");
 
-        Map<String, Integer> userToInt = new HashMap<>();
-        List<String> intToUser = new ArrayList<>();
-        // GraphAjdacencyMatrix graph = generateAdjacencyMatrixGraphFromData(users, userToInt, intToUser);
+        // GraphAjdacencyMatrix graph = generateAdjacencyMatrixGraphFromData(users, verts);
         // graph.printGraph();
 
-        // System.out.println();
-        // long startTime3 = System.nanoTime();
-        // BFSqueue<Integer> bfs = new BFSqueue<>();
-        // bfs.printShortestDistance(g, v1, v2);
-        // long endTime3 = System.nanoTime();
-        // long totalTime3 = endTime3 - startTime3;
-        // System.out.println("Time to Compute Path: " + totalTime3 / 1000000000.0 + "s");
+        System.out.println();
+        long startTime3 = System.nanoTime();
+        BFSqueue<Integer> bfs = new BFSqueue<>();
+        bfs.printShortestDistance(g, v1, v2);
+        long endTime3 = System.nanoTime();
+        long totalTime3 = endTime3 - startTime3;
+        System.out.println();
+        System.out.println("Time to Compute Path: " + totalTime3 / divider +"s");
     }
 
     public static Vertex<Integer> findVertex(Graph<Integer, Integer> g, Integer element) {
@@ -184,69 +189,51 @@ public class TestApplication {
     }
 
     // To be done for Adj List
-    // public static Graph<String, Integer> generateAdjacencyListGraphFromData(JSONArray users) {
+    // public static Graph<String, Integer>
+    // generateAdjacencyListGraphFromData(JSONArray users) {
 
-    //     HashMap<String, Vertex<String>> graph = new HashMap<>();
+    // HashMap<String, Vertex<String>> graph = new HashMap<>();
 
-    //     for (Object u : users) {
-    //         JSONObject user = (JSONObject) u;
-    //         String user_id = (String) user.get("user_id");
-    //         labels.add(user_id);
-    //         String friendString = (String) user.get("friends");
-    //         String[] friends = friendString.replace(" ", "").split(",");
-    //         for (String s : friends) {
-    //             labels.add(s);
-    //         }
-    //     }
-    //     for (String label : labels) {
-    //         verts.put(label, g.insertVertex(label));
-    //     }
-    //     for (Object u : users) {
-    //         JSONObject user = (JSONObject) u;
-    //         String user_id = (String) user.get("user_id");
-    //         String friendString = (String) user.get("friends");
-    //         String[] friends = friendString.replace(" ", "").split(",");
-    //         for (String s : friends) {
-    //             if (g.getEdge(verts.get(user_id), verts.get(s)) == null) {
-    //                 g.insertEdge(verts.get(user_id), verts.get(s), 1);
-    //             }
-    //         }
-    //     }
-    //     return graph;
+    // for (Object u : users) {
+    // JSONObject user = (JSONObject) u;
+    // String user_id = (String) user.get("user_id");
+    // labels.add(user_id);
+    // String friendString = (String) user.get("friends");
+    // String[] friends = friendString.replace(" ", "").split(",");
+    // for (String s : friends) {
+    // labels.add(s);
+    // }
+    // }
+    // for (String label : labels) {
+    // verts.put(label, g.insertVertex(label));
+    // }
+    // for (Object u : users) {
+    // JSONObject user = (JSONObject) u;
+    // String user_id = (String) user.get("user_id");
+    // String friendString = (String) user.get("friends");
+    // String[] friends = friendString.replace(" ", "").split(",");
+    // for (String s : friends) {
+    // if (g.getEdge(verts.get(user_id), verts.get(s)) == null) {
+    // g.insertEdge(verts.get(user_id), verts.get(s), 1);
+    // }
+    // }
+    // }
+    // return graph;
     // }
 
     public static GraphAjdacencyMatrix generateAdjacencyMatrixGraphFromData(JSONArray users,
-            Map<String, Integer> userToInt, List<String> intToUser) {
-        TreeSet<String> labels = new TreeSet<>();
-
-        for (Object u : users) {
-            JSONObject user = (JSONObject) u;
-            String user_id = (String) user.get("user_id");
-            labels.add(user_id);
-            String friendString = (String) user.get("friends");
-            String[] friends = friendString.replace(" ", "").split(",");
-            for (String s : friends) {
-                labels.add(s);
-            }
-        }
-
-        // Map user_id to a unique integer
-        Integer index = 0;
-        for (String label : labels) {
-            userToInt.put(label, index++);
-            intToUser.add(label);
-        }
+            HashMap<String, Vertex<Integer>> userToInt) {
 
         // Initialise the matrix
         GraphAjdacencyMatrix g = new GraphAjdacencyMatrix(userToInt.size());
 
         for (Object u : users) {
             JSONObject user = (JSONObject) u;
-            Integer id = userToInt.get(user.get("user_id"));
+            Integer id = userToInt.get(user.get("user_id")).getElement();
             String friendString = (String) user.get("friends");
             String[] friends = friendString.replace(" ", "").split(",");
             for (String s : friends) {
-                g.addEdge(id, userToInt.get(s));
+                g.addEdge(id, userToInt.get(s).getElement());
             }
         }
         return g;
