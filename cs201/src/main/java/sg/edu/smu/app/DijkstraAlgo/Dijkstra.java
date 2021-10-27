@@ -1,3 +1,5 @@
+package sg.edu.smu.app.DijkstraAlgo;
+
 import java.util.*;
 
 // Data structure to store graph edges

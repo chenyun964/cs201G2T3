@@ -1,5 +1,6 @@
 package sg.edu.smu.app;
 
+import javax.print.attribute.HashAttributeSet;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -7,10 +8,11 @@ import java.awt.event.ActionEvent;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+
+import sg.edu.smu.app.bfsqueue.BFSqueue;
 import sg.edu.smu.app.datastructures.AdjacencyMapGraph;
 import sg.edu.smu.app.datastructures.Graph;
 import sg.edu.smu.app.datastructures.GraphAlgorithms;
-import sg.edu.smu.app.datastructures.Map;
 import sg.edu.smu.app.datastructures.Vertex;
 import sg.edu.smu.app.datastructures.Edge;
 
@@ -73,8 +75,8 @@ public class TestApplication {
     }
 
     public static void main(String[] args) {
-        TestApplication app = new TestApplication();
-        app.createUI();
+        //TestApplication app = new TestApplication();
+        //app.createUI();
 
         JSONParser parser = new JSONParser();
         JSONArray users = null;
@@ -100,21 +102,30 @@ public class TestApplication {
         System.out.println("Expected Steps: 13");
         // Find the shorters path between two users
         long startTime2 = System.nanoTime();
-        Map<Vertex<String>, Integer> a = GraphAlgorithms.shortestPathLengths(g, v1);
-        a.entrySet().forEach(element -> {
-            if (element.getKey().getElement().equals(v2.getElement())){
-                System.out.println("Actaul Steps: " + element.getValue());
-                return;
-            }
-        });
+        // Map<Vertex<String>, Integer> a = GraphAlgorithms.shortestPathLengths(g, v1);
+        // a.entrySet().forEach(element -> {
+        //     if (element.getKey().getElement().equals(v2.getElement())){
+        //         System.out.println("Actaul Steps: " + element.getValue());
+        //         return;
+        //     }
+        // });
 
         long endTime2 = System.nanoTime();
         long totalTime2 = endTime2 - startTime2;
         System.out.println("Time to Compute Path: " + totalTime2 / 1000000000.0 + "s");
 
-        System.out.println();
-        GraphAjdacencyMatrix graph = generateAdjacencyMatrixGraphFromData(users);
+        Map<String, Integer> userToInt = new HashMap<>();
+        List<String> intToUser = new ArrayList<>();
+        GraphAjdacencyMatrix graph = generateAdjacencyMatrixGraphFromData(users, userToInt, intToUser);
         // graph.printGraph();
+
+        System.out.println();
+        long startTime3 = System.nanoTime();
+        BFSqueue<String> bfs = new BFSqueue<>();
+        bfs.printShortestDistance(g, v1, v2);
+        long endTime3 = System.nanoTime();
+        long totalTime3 = endTime3 - startTime3;
+        System.out.println("Time to Compute Path: " + totalTime3 / 1000000000.0 + "s");
     }
 
     public static Vertex<String> findVertex(Graph<String, Integer> g, String element) {
@@ -162,11 +173,10 @@ public class TestApplication {
         return g;
     }
 
-    public static GraphAjdacencyMatrix generateAdjacencyMatrixGraphFromData(JSONArray users) {
+    public static GraphAjdacencyMatrix generateAdjacencyMatrixGraphFromData(
+            JSONArray users, Map<String, Integer> userToInt, List<String> intToUser) {
 
         TreeSet<String> labels = new TreeSet<>();
-        HashMap<String, Integer> pairs = new HashMap<>();
-        HashMap<String, Vertex<String>> verts = new HashMap<>();
 
         for (Object u : users) {
             JSONObject user = (JSONObject) u;
@@ -182,23 +192,22 @@ public class TestApplication {
         // Map user_id to a unique integer
         Integer index = 0;
         for (String label : labels) {
-            pairs.put(label, index++);
+            userToInt.put(label, index++);
+            intToUser.add(label);
         }
 
         // Initialise the matrix
-        GraphAjdacencyMatrix g = new GraphAjdacencyMatrix(pairs.size());
-        
+        GraphAjdacencyMatrix g = new GraphAjdacencyMatrix(userToInt.size());
+
         for (Object u : users) {
             JSONObject user = (JSONObject) u;
-            String user_id = (String) user.get("user_id");
+            Integer id = userToInt.get(user.get("user_id"));
             String friendString = (String) user.get("friends");
             String[] friends = friendString.replace(" ", "").split(",");
             for (String s : friends) {
-                if (g.getEdge(verts.get(user_id), verts.get(s)) == null) {
-                    g.insertEdge(verts.get(user_id), verts.get(s), 1);
-                }
+                g.addEdge(id, userToInt.get(s));
             }
         }
-        return null;
+        return g;
     }
 }
