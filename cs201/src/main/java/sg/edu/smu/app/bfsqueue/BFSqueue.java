@@ -1,20 +1,26 @@
 package sg.edu.smu.app.bfsqueue;
 
 import java.util.LinkedList;
+
+import sg.edu.smu.app.datastructures.Edge;
+import sg.edu.smu.app.datastructures.Graph;
+import sg.edu.smu.app.datastructures.Vertex;
+
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class BFSqueue {
-    
-    public boolean BFS(ArrayList<ArrayList<Integer>> adj, int src, int dest, int v, int pred[], int dist[]) {
+    public boolean BFS(Graph<Integer, Integer> graph, Vertex<Integer> src, Vertex<Integer> dest, 
+            int v, int pred[], int dist[]) {
         // a queue to maintain queue of vertices whose
         // adjacency list is to be scanned as per normal
         // BFS algorithm using LinkedList of Integer type
-        LinkedList<Integer> queue = new LinkedList<Integer>();
+        LinkedList<Vertex<Integer>> queue = new LinkedList<>();
 
         // boolean array visited[] which stores the
         // information whether ith vertex is reached
         // at least once in the Breadth first search
-        boolean visited[] = new boolean[v];
+        boolean[] visited = new boolean[v];
 
         // initially all vertices are unvisited
         // so v[i] for all i is false
@@ -28,23 +34,25 @@ public class BFSqueue {
 
         // now source is first to be visited and
         // distance from source to itself should be 0
-        visited[src] = true;
-        dist[src] = 0;
+        visited[src.getElement()] = true;
+        dist[src.getElement()] = 0;
         queue.add(src);
 
         // bfs Algorithm
         while (!queue.isEmpty()) {
-            int u = queue.remove();
-            for (int i = 0; i < adj.get(u).size(); i++) {
-                if (visited[adj.get(u).get(i)] == false) {
-                    visited[adj.get(u).get(i)] = true;
-                    dist[adj.get(u).get(i)] = dist[u] + 1;
-                    pred[adj.get(u).get(i)] = u;
-                    queue.add(adj.get(u).get(i));
+            Vertex<Integer> u = queue.remove();
+            
+            for (Edge<Integer> e : graph.outgoingEdges(u)) {
+                Vertex<Integer> vert = graph.opposite(u, e);
+                if (visited[vert.getElement()] == false) {
+                    visited[vert.getElement()] = true;
+                    dist[vert.getElement()] = dist[u.getElement()] + 1;
+                    pred[vert.getElement()] = u.getElement();
+                    queue.add(vert);
 
                     // stopping condition (when we find
                     // our destination)
-                    if (adj.get(u).get(i) == dest)
+                    if (vert == dest)
                         return true;
                 }
             }
