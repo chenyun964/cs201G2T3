@@ -12,6 +12,7 @@ import sg.edu.smu.app.datastructures.Graph;
 import sg.edu.smu.app.datastructures.GraphAlgorithms;
 import sg.edu.smu.app.datastructures.Map;
 import sg.edu.smu.app.datastructures.Vertex;
+import sg.edu.smu.app.datastructures.Edge;
 
 import java.io.FileReader;
 import java.io.Reader;
@@ -67,14 +68,13 @@ public class TestApplication {
         frame.add(graph);
 
         // Adding Components to the frame.
-        frame.getContentPane().add(BorderLayout.SOUTH, panel);
+        frame.getContentPane().add(BorderLayout.NORTH, panel);
         frame.setVisible(true);
     }
 
     public static void main(String[] args) {
         TestApplication app = new TestApplication();
         app.createUI();
-
 
         JSONParser parser = new JSONParser();
         JSONArray users = null;
@@ -92,12 +92,13 @@ public class TestApplication {
         System.out.println(totalTime / 1000000000.0 + " seconds");
 
         Vertex<String> v1 = findVertex(g, "zzrA6bRsAxj_qXui0SyBwQ");
-//        Vertex<String> v2 = findVertex(g, "PZW77I6qXeM0RQjo1kGBUg");
+        // Vertex<String> v2 = findVertex(g, "PZW77I6qXeM0RQjo1kGBUg");
 
         long startTime2 = System.nanoTime();
         Map<Vertex<String>, Integer> a = GraphAlgorithms.shortestPathLengths(g, v1);
         a.entrySet().forEach(element -> {
-            System.out.printf("from %s to %s: %d\n", v1.getElement(), element.getKey().getElement(), element.getValue());
+            System.out.printf("from %s to %s: %d\n", v1.getElement(), element.getKey().getElement(),
+                    element.getValue());
         });
         long endTime2 = System.nanoTime();
         long totalTime2 = endTime2 - startTime2;
