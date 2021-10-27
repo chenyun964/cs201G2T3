@@ -110,7 +110,7 @@ public class TestApplication {
         long totalTime = endTime - startTime;
         System.out.println("Time to Load Graph: " + totalTime / divider + "s");
         System.out.println();
-        
+
         // Test input
         // From: "zzrA6bRsAxj_qXui0SyBwQ"
         // To: "PZW77I6qXeM0RQjo1kGBUg"
@@ -118,7 +118,7 @@ public class TestApplication {
         Vertex<Integer> v2 = findVertex(g, 369441);
 
         long startTime2 = System.nanoTime();
-        sg.edu.smu.app.datastructures.Map<Vertex<Integer>, Integer> a = GraphAlgorithms.shortestPathLengths(g, v1);
+        sg.edu.smu.app.datastructures.Map<Vertex<Integer>, Integer> a = GraphAlgorithms.shortestPathLengths(g, v1, v2);
         a.entrySet().forEach(element -> {
             if (element.getKey().getElement().equals(v2.getElement())) {
                 System.out.printf("from %s\nTo %s\nSteps: %d\n", mapList.get(v1.getElement()),
@@ -141,7 +141,7 @@ public class TestApplication {
         long endTime3 = System.nanoTime();
         long totalTime3 = endTime3 - startTime3;
         System.out.println();
-        System.out.println("Time to Compute Path: " + totalTime3 / divider +"s");
+        System.out.println("Time to Compute Path: " + totalTime3 / divider + "s");
     }
 
     public static Vertex<Integer> findVertex(Graph<Integer, Integer> g, Integer element) {
@@ -172,7 +172,7 @@ public class TestApplication {
     }
 
     public static Graph<Integer, Integer> generateAdjacencyMapGraphFromData(JSONArray users, Graph<Integer, Integer> g,
-            HashMap<String, Vertex<Integer>> verts) {
+                                                                            HashMap<String, Vertex<Integer>> verts) {
 
         for (Object u : users) {
             JSONObject user = (JSONObject) u;
@@ -222,7 +222,7 @@ public class TestApplication {
     // }
 
     public static GraphAjdacencyMatrix generateAdjacencyMatrixGraphFromData(JSONArray users,
-            HashMap<String, Vertex<Integer>> userToInt) {
+                                                                            HashMap<String, Vertex<Integer>> userToInt) {
 
         // Initialise the matrix
         GraphAjdacencyMatrix g = new GraphAjdacencyMatrix(userToInt.size());

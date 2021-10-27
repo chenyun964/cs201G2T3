@@ -194,7 +194,7 @@ public class GraphAlgorithms {
      * The edge's element is assumed to be its integral weight.
      */
     public static <V> Map<Vertex<V>, Integer>
-    shortestPathLengths(Graph<V, Integer> g, Vertex<V> src) {
+    shortestPathLengths(Graph<V, Integer> g, Vertex<V> src, Vertex<V> dest) {
         // d.get(v) is upper bound on distance from src to v
         Map<Vertex<V>, Integer> d = new ProbeHashMap<>();
         // map reachable v to its d value
@@ -227,16 +227,16 @@ public class GraphAlgorithms {
                 if (cloud.get(v) == null) {
                     // perform relaxation step on edge (u,v)
                     int wgt = e.getElement();
-                    if (d.get(u) + wgt < d.get(v)) {              // better path to v?
+                    if (d.get(u) + wgt < d.get(v)) {                // better path to v?
                         d.put(v, d.get(u) + wgt);                   // update the distance
                         pq.replaceKey(pqTokens.get(v), d.get(v));   // update the pq entry
                     }
                 }
             }
+            if (u == dest) break;
         }
         return cloud;         // this only includes reachable vertices
     }
-
 
 
     /**
