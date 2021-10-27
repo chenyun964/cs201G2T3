@@ -105,23 +105,23 @@ public class TestApplication {
         }
 
         long startTime = System.nanoTime();
-        g = generateAdjacencyMapGraphFromData(users, g, verts);
+        g = generateAdjacencyMapFromData(users, g, verts);
         long endTime = System.nanoTime();
         long totalTime = endTime - startTime;
         System.out.println("Time to Load Graph: " + totalTime / divider + "s");
         System.out.println();
-        
+
         // Test input
         // From: "zzrA6bRsAxj_qXui0SyBwQ"
         // To: "PZW77I6qXeM0RQjo1kGBUg"
-        Vertex<Integer> v1 = findVertex(g, 889231);
-        Vertex<Integer> v2 = findVertex(g, 369441);
+        Vertex<Integer> v1 = verts.get("zzrA6bRsAxj_qXui0SyBwQ");
+        Vertex<Integer> v2 = verts.get("PZW77I6qXeM0RQjo1kGBUg");
 
         long startTime2 = System.nanoTime();
         sg.edu.smu.app.datastructures.Map<Vertex<Integer>, Integer> a = GraphAlgorithms.shortestPathLengths(g, v1);
         a.entrySet().forEach(element -> {
             if (element.getKey().getElement().equals(v2.getElement())) {
-                System.out.printf("from %s\nTo %s\nSteps: %d\n", mapList.get(v1.getElement()),
+                System.out.printf("from: %s\nTo: %s\nSteps: %d\n", mapList.get(v1.getElement()),
                         mapList.get(v2.getElement()), element.getValue());
                 return;
             }
@@ -131,8 +131,10 @@ public class TestApplication {
         long totalTime2 = endTime2 - startTime2;
         System.out.println("Time to Compute Path: " + totalTime2 / divider + "s");
 
-        // GraphAjdacencyMatrix graph = generateAdjacencyMatrixGraphFromData(users, verts);
+        // GraphAjdacencyMatrix graph = generateAdjacencyMatrixFromData(users, verts);
         // graph.printGraph();
+
+        GraphAjdacencyList adjList = generateAdjacencyListFromData(users, verts);
 
         System.out.println();
         long startTime3 = System.nanoTime();
@@ -141,22 +143,10 @@ public class TestApplication {
         long endTime3 = System.nanoTime();
         long totalTime3 = endTime3 - startTime3;
         System.out.println();
-        System.out.println("Time to Compute Path: " + totalTime3 / divider +"s");
-    }
-
-    public static Vertex<Integer> findVertex(Graph<Integer, Integer> g, Integer element) {
-        Iterator<Vertex<Integer>> it = g.vertices().iterator();
-        while (it.hasNext()) {
-            Vertex<Integer> v = it.next();
-            if (v.getElement().equals(element)) {
-                return v;
-            }
-        }
-        return null;
+        System.out.println("Time to Compute Path: " + totalTime3 / divider + "s");
     }
 
     public static TreeSet<String> getLabels(JSONArray users) {
-
         TreeSet<String> labels = new TreeSet<>();
         for (Object u : users) {
             JSONObject user = (JSONObject) u;
@@ -171,7 +161,7 @@ public class TestApplication {
         return labels;
     }
 
-    public static Graph<Integer, Integer> generateAdjacencyMapGraphFromData(JSONArray users, Graph<Integer, Integer> g,
+    public static Graph<Integer, Integer> generateAdjacencyMapFromData(JSONArray users, Graph<Integer, Integer> g,
             HashMap<String, Vertex<Integer>> verts) {
 
         for (Object u : users) {
@@ -188,40 +178,27 @@ public class TestApplication {
         return g;
     }
 
-    // To be done for Adj List
-    // public static Graph<String, Integer>
-    // generateAdjacencyListGraphFromData(JSONArray users) {
+    public static GraphAjdacencyList generateAdjacencyListFromData(JSONArray users,
+            HashMap<String, Vertex<Integer>> userToInt) {
+        
+        GraphAjdacencyList ajdList = new GraphAjdacencyList(userToInt.size());
 
-    // HashMap<String, Vertex<String>> graph = new HashMap<>();
+        for (Object u : users) {
+            JSONObject user = (JSONObject) u;
+            Integer id = userToInt.get(user.get("user_id")).getElement();
+            String friendString = (String) user.get("friends");
+            String[] friends = friendString.replace(" ", "").split(",");
+            for (String s : friends) {
+                ajdList.addEdge(id, userToInt.get(s).getElement());
+            }
+        }
 
-    // for (Object u : users) {
-    // JSONObject user = (JSONObject) u;
-    // String user_id = (String) user.get("user_id");
-    // labels.add(user_id);
-    // String friendString = (String) user.get("friends");
-    // String[] friends = friendString.replace(" ", "").split(",");
-    // for (String s : friends) {
-    // labels.add(s);
-    // }
-    // }
-    // for (String label : labels) {
-    // verts.put(label, g.insertVertex(label));
-    // }
-    // for (Object u : users) {
-    // JSONObject user = (JSONObject) u;
-    // String user_id = (String) user.get("user_id");
-    // String friendString = (String) user.get("friends");
-    // String[] friends = friendString.replace(" ", "").split(",");
-    // for (String s : friends) {
-    // if (g.getEdge(verts.get(user_id), verts.get(s)) == null) {
-    // g.insertEdge(verts.get(user_id), verts.get(s), 1);
-    // }
-    // }
-    // }
-    // return graph;
-    // }
+        // ajdList.printGraph();
 
-    public static GraphAjdacencyMatrix generateAdjacencyMatrixGraphFromData(JSONArray users,
+        return ajdList;
+    }
+
+    public static GraphAjdacencyMatrix generateAdjacencyMatrixFromData(JSONArray users,
             HashMap<String, Vertex<Integer>> userToInt) {
 
         // Initialise the matrix
