@@ -3,13 +3,19 @@ package sg.edu.smu.app;
 import javax.swing.*;
 import java.awt.*;
 
+import com.sun.source.tree.Tree;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import sg.edu.smu.app.datastructures.AdjacencyMapGraph;
+import sg.edu.smu.app.datastructures.Graph;
+import sg.edu.smu.app.datastructures.Vertex;
 
 import java.io.FileReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.TreeSet;
 
 public class TestApplication {
     public static void main(String[] args) {
@@ -39,12 +45,12 @@ public class TestApplication {
         panel.add(tf2);
         panel.add(send);
         panel.add(reset);
-        
+
         // Text Area at the Center
         JTextArea ta = new JTextArea();
         frame.add(panel);
         frame.add(graph);
-        
+
         // Adding Components to the frame.
         frame.getContentPane().add(BorderLayout.SOUTH, panel);
         frame.setVisible(true);
@@ -53,17 +59,44 @@ public class TestApplication {
 
         JSONParser parser = new JSONParser();
 
-        try (Reader reader = new FileReader("data.json")) {
+        Graph<String, Integer> g = new AdjacencyMapGraph<>(false);
+        TreeSet<String> labels = new TreeSet<>();
+        HashMap<String, Vertex<String>> verts = new HashMap<>();
 
+
+        try (Reader reader = new FileReader("data.json")) {
             JSONArray users = (JSONArray) parser.parse(reader);
             for (Object u : users) {
                 JSONObject user = (JSONObject) u;
                 String user_id = (String) user.get("user_id");
-                String friends = (String) user.get("friends");
+                labels.add(user_id);
+                String friendString = (String) user.get("friends");
+                String[] friends = friendString.replace(" ", "").split(",");
+                for (String s : friends) {
+                    labels.add(s);
+
+                }
             }
+            for (String label : labels) {
+                verts.put(label, g.insertVertex(label));
+            }
+
+            for (Object u : users) {
+                JSONObject user = (JSONObject) u;
+                String user_id = (String) user.get("user_id");
+                String friendString = (String) user.get("friends");
+                String[] friends = friendString.replace(" ", "").split(",");
+                for (String s : friends) {
+                    if (g.getEdge(verts.get(user_id), verts.get(s)) == null) {
+                        g.insertEdge(verts.get(user_id), verts.get(s), 1);
+                    }
+                }
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+        System.out.println(g);
     }
 }
 
@@ -132,4 +165,28 @@ class GraphDraw extends JPanel {
             g.drawString(n.name, n.x - f.stringWidth(n.name) / 2, n.y + f.getHeight() / 2);
         }
     }
+
+    public static Graph<String, Integer> graphFromEdgelist(String[][] edges, boolean directed) {
+        Graph<String, Integer> g = new AdjacencyMapGraph<>(directed);
+
+        // first pass to get sorted set of vertex labels
+        TreeSet<String> labels = new TreeSet<>();
+        for (String[] edge : edges) {
+            labels.add(edge[0]);
+            labels.add(edge[1]);
+        }
+
+        // now create vertices (in alphabetical order)
+        HashMap<String, Vertex<String>> verts = new HashMap<>();
+        for (String label : labels)
+            verts.put(label, g.insertVertex(label));
+
+        // now add edges to the graph
+        for (String[] edge : edges) {
+            Integer cost = (edge.length == 2 ? 1 : Integer.parseInt(edge[2]));
+            g.insertEdge(verts.get(edge[0]), verts.get(edge[1]), cost);
+        }
+        return g;
+    }
+
 }
