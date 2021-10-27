@@ -9,13 +9,13 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import sg.edu.smu.app.datastructures.AdjacencyMapGraph;
 import sg.edu.smu.app.datastructures.Graph;
+import sg.edu.smu.app.datastructures.GraphAlgorithms;
+import sg.edu.smu.app.datastructures.Map;
 import sg.edu.smu.app.datastructures.Vertex;
 
 import java.io.FileReader;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.List;
 
 public class TestApplication {
@@ -75,49 +75,76 @@ public class TestApplication {
         TestApplication app = new TestApplication();
         app.createUI();
 
+
         JSONParser parser = new JSONParser();
+        JSONArray users = null;
+        try (Reader reader = new FileReader("data.json")) {
+            users = (JSONArray) parser.parse(reader);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        long startTime = System.nanoTime();
+        Graph<String, Integer> g = generateAdjacencyMapGraphFromData(users);
+        System.out.println(g);
+        long endTime = System.nanoTime();
+        long totalTime = endTime - startTime;
+        System.out.println(totalTime / 1000000000.0 + " seconds");
+
+        Vertex<String> v1 = findVertex(g, "zzrA6bRsAxj_qXui0SyBwQ");
+//        Vertex<String> v2 = findVertex(g, "PZW77I6qXeM0RQjo1kGBUg");
+
+        long startTime2 = System.nanoTime();
+        Map<Vertex<String>, Integer> a = GraphAlgorithms.shortestPathLengths(g, v1);
+        a.entrySet().forEach(element -> {
+            System.out.printf("from %s to %s: %d\n", v1.getElement(), element.getKey().getElement(), element.getValue());
+        });
+        long endTime2 = System.nanoTime();
+        long totalTime2 = endTime2 - startTime2;
+        System.out.println(totalTime2 / 1000000000.0 + " seconds");
+    }
+
+    public static Vertex<String> findVertex(Graph<String, Integer> g, String element) {
+        Iterator<Vertex<String>> it = g.vertices().iterator();
+        while (it.hasNext()) {
+            Vertex<String> v = it.next();
+            if (v.getElement().equals(element)) {
+                return v;
+            }
+        }
+        return null;
+    }
+
+    public static Graph<String, Integer> generateAdjacencyMapGraphFromData(JSONArray users) {
 
         Graph<String, Integer> g = new AdjacencyMapGraph<>(false);
         TreeSet<String> labels = new TreeSet<>();
         HashMap<String, Vertex<String>> verts = new HashMap<>();
 
-        long startTime = System.nanoTime();
-        try (Reader reader = new FileReader("data.json")) {
-            JSONArray users = (JSONArray) parser.parse(reader);
-            for (Object u : users) {
-                JSONObject user = (JSONObject) u;
-                String user_id = (String) user.get("user_id");
-                labels.add(user_id);
-                String friendString = (String) user.get("friends");
-                String[] friends = friendString.replace(" ", "").split(",");
-                for (String s : friends) {
-                    labels.add(s);
-
-                }
+        for (Object u : users) {
+            JSONObject user = (JSONObject) u;
+            String user_id = (String) user.get("user_id");
+            labels.add(user_id);
+            String friendString = (String) user.get("friends");
+            String[] friends = friendString.replace(" ", "").split(",");
+            for (String s : friends) {
+                labels.add(s);
             }
-            for (String label : labels) {
-                verts.put(label, g.insertVertex(label));
-            }
-
-            for (Object u : users) {
-                JSONObject user = (JSONObject) u;
-                String user_id = (String) user.get("user_id");
-                String friendString = (String) user.get("friends");
-                String[] friends = friendString.replace(" ", "").split(",");
-                for (String s : friends) {
-                    if (g.getEdge(verts.get(user_id), verts.get(s)) == null) {
-                        g.insertEdge(verts.get(user_id), verts.get(s), 1);
-                    }
-                }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-        long endTime = System.nanoTime();
-        long totalTime = endTime - startTime;
-        System.out.println(totalTime / 1000000000.0 + " seconds");
-
-        // System.out.println(g);
+        for (String label : labels) {
+            verts.put(label, g.insertVertex(label));
+        }
+        for (Object u : users) {
+            JSONObject user = (JSONObject) u;
+            String user_id = (String) user.get("user_id");
+            String friendString = (String) user.get("friends");
+            String[] friends = friendString.replace(" ", "").split(",");
+            for (String s : friends) {
+                if (g.getEdge(verts.get(user_id), verts.get(s)) == null) {
+                    g.insertEdge(verts.get(user_id), verts.get(s), 1);
+                }
+            }
+        }
+        return g;
     }
 }
