@@ -76,7 +76,7 @@ public class BFSqueue {
         System.out.println("Shortest path length is: " + dist[dest]);
 
         // Print path
-        System.out.println("Path is ::");
+        System.out.println("Path is :");
         for (int i = path.size() - 1; i >= 0; i--) {
             System.out.print(path.get(i) + " ");
         }
