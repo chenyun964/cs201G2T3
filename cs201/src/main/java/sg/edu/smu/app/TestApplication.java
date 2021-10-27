@@ -2,8 +2,8 @@ package sg.edu.smu.app;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 
-import com.sun.source.tree.Tree;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -16,9 +16,16 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeSet;
+import java.util.List;
 
 public class TestApplication {
-    public static void main(String[] args) {
+
+    String fromId;
+    String toId;
+    JTextField fromIdInput;
+    JTextField toIdInput;
+
+    public void createUI() {
         // Creating the Frame
         JFrame frame = new JFrame("Chat Frame");
         frame.setSize(800, 400);
@@ -32,65 +39,57 @@ public class TestApplication {
 
         // Creating the panel at bottom and adding components
         JPanel panel = new JPanel(); // the panel is not visible in output
-        JLabel label1 = new JLabel("Enter id 1");
-        JTextField tf1 = new JTextField(20); // accepts upto 20 characters
-        JLabel label2 = new JLabel("Enter id 2");
-        JTextField tf2 = new JTextField(20); // accepts upto 20 characters
-        JButton send = new JButton("Send");
-        JButton reset = new JButton("Reset");
+        JLabel label1 = new JLabel("Enter user id 1");
+        fromIdInput = new JTextField(20); // accepts upto 20 characters
+        JLabel label2 = new JLabel("Enter user id 2");
+        toIdInput = new JTextField(20); // accepts upto 20 characters
+        JButton sendBtn = new JButton("Connect");
+
+        Action action = new AbstractAction("1") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                fromId = fromIdInput.getText();
+                toId = toIdInput.getText();
+                System.out.println("From:" + fromId + " To: " + toId);
+            }
+        };
+
+        sendBtn.getActionMap().put("Enter", action);
+        sendBtn.addActionListener(action);
 
         panel.add(label1); // Components Added using Flow Layout
-        panel.add(tf1);
+        panel.add(fromIdInput);
         panel.add(label2); // Components Added using Flow Layout
-        panel.add(tf2);
-        panel.add(send);
-        panel.add(reset);
+        panel.add(toIdInput);
+        panel.add(sendBtn);
 
-        // Text Area at the Center
-        JTextArea ta = new JTextArea();
         frame.add(panel);
         frame.add(graph);
 
         // Adding Components to the frame.
         frame.getContentPane().add(BorderLayout.SOUTH, panel);
         frame.setVisible(true);
+    }
 
 
     }
 }
 
-class GraphDraw extends JPanel {
-    int width;
-    int height;
+        long endTime = System.nanoTime();
+        long totalTime = endTime - startTime;
+        System.out.println(totalTime / 1000000000.0 + " seconds");
 
-    ArrayList<Node> nodes;
-    ArrayList<edge> edges;
-
-    public GraphDraw() { // Constructor
-        nodes = new ArrayList<Node>();
-        edges = new ArrayList<edge>();
-        width = 30;
-        height = 30;
+        // System.out.println(g);
     }
 
-    class Node {
-        int x, y;
-        String name;
+class edge {
+    int i, j;
 
-        public Node(String myName, int myX, int myY) {
-            x = myX;
-            y = myY;
-            name = myName;
-        }
+    public edge(int ii, int jj) {
+        i = ii;
+        j = jj;
     }
 
-    class edge {
-        int i, j;
-
-        public edge(int ii, int jj) {
-            i = ii;
-            j = jj;
-        }
     }
 
     public void addNode(String name, int x, int y) {
@@ -128,7 +127,7 @@ class GraphDraw extends JPanel {
     public static Graph<String, Integer> generateAdjacencyMapGraphFromData() {
         JSONParser parser = new JSONParser();
 
-        //By Default, the dataset is undirected by default
+        // By Default, the dataset is undirected by default
         Graph<String, Integer> g = new AdjacencyMapGraph<>(false);
         TreeSet<String> labels = new TreeSet<>();
         HashMap<String, Vertex<String>> verts = new HashMap<>();
