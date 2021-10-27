@@ -233,7 +233,9 @@ public class GraphAlgorithms {
                     }
                 }
             }
-            if (u == dest) break;
+            if (u == dest){
+                break;
+            }
         }
         return cloud;         // this only includes reachable vertices
     }

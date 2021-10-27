@@ -114,19 +114,15 @@ public class TestApplication {
         // Test input
         // From: "zzrA6bRsAxj_qXui0SyBwQ"
         // To: "PZW77I6qXeM0RQjo1kGBUg"
-        Vertex<Integer> v1 = findVertex(g, 889231);
-        Vertex<Integer> v2 = findVertex(g, 369441);
-
+//        Vertex<Integer> v1 = findVertex(g, 889231);
+//        Vertex<Integer> v2 = findVertex(g, 369441);
+        Vertex<Integer> v1 = findVertex(g, new Random().nextInt(mapList.size()));
+        Vertex<Integer> v2 = findVertex(g, new Random().nextInt(mapList.size()));
         long startTime2 = System.nanoTime();
         sg.edu.smu.app.datastructures.Map<Vertex<Integer>, Integer> a = GraphAlgorithms.shortestPathLengths(g, v1, v2);
-        a.entrySet().forEach(element -> {
-            if (element.getKey().getElement().equals(v2.getElement())) {
-                System.out.printf("from %s\nTo %s\nSteps: %d\n", mapList.get(v1.getElement()),
-                        mapList.get(v2.getElement()), element.getValue());
-                return;
-            }
-        });
 
+        System.out.printf("from %s\nTo %s\nSteps: %d\n", mapList.get(v1.getElement()),
+                        mapList.get(v2.getElement()), a.get(v2));
         long endTime2 = System.nanoTime();
         long totalTime2 = endTime2 - startTime2;
         System.out.println("Time to Compute Path: " + totalTime2 / divider + "s");
