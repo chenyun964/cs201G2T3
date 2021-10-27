@@ -13,6 +13,7 @@ import sg.edu.smu.app.datastructures.GraphAlgorithms;
 import sg.edu.smu.app.datastructures.Map;
 import sg.edu.smu.app.datastructures.Vertex;
 import sg.edu.smu.app.datastructures.Edge;
+import sg.edu.smu.app.DijkstraAlgo.*;
 
 import java.io.FileReader;
 import java.io.Reader;
@@ -94,6 +95,7 @@ public class TestApplication {
         Vertex<String> v2 = findVertex(g, "PZW77I6qXeM0RQjo1kGBUg");
 
         long startTime2 = System.nanoTime();
+        // calling of 
         Map<Vertex<String>, Integer> a = GraphAlgorithms.shortestPathLengths(g, v1);
         a.entrySet().forEach(element -> {
             if (element.getKey().getElement().equals(v2.getElement())){
@@ -149,4 +151,36 @@ public class TestApplication {
         }
         return g;
     }
+
+    // To be done for Adj List
+    // public static Graph<String, Integer> generateAdjacencyListGraphFromData(JSONArray users) {
+
+    //     HashMap<String, Vertex<String>> graph = new HashMap<>();
+
+    //     for (Object u : users) {
+    //         JSONObject user = (JSONObject) u;
+    //         String user_id = (String) user.get("user_id");
+    //         labels.add(user_id);
+    //         String friendString = (String) user.get("friends");
+    //         String[] friends = friendString.replace(" ", "").split(",");
+    //         for (String s : friends) {
+    //             labels.add(s);
+    //         }
+    //     }
+    //     for (String label : labels) {
+    //         verts.put(label, g.insertVertex(label));
+    //     }
+    //     for (Object u : users) {
+    //         JSONObject user = (JSONObject) u;
+    //         String user_id = (String) user.get("user_id");
+    //         String friendString = (String) user.get("friends");
+    //         String[] friends = friendString.replace(" ", "").split(",");
+    //         for (String s : friends) {
+    //             if (g.getEdge(verts.get(user_id), verts.get(s)) == null) {
+    //                 g.insertEdge(verts.get(user_id), verts.get(s), 1);
+    //             }
+    //         }
+    //     }
+    //     return graph;
+    // }
 }
