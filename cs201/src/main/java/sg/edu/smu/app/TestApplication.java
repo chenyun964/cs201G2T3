@@ -55,48 +55,7 @@ public class TestApplication {
         frame.getContentPane().add(BorderLayout.SOUTH, panel);
         frame.setVisible(true);
 
-        System.out.println("Hello world");
 
-        JSONParser parser = new JSONParser();
-
-        Graph<String, Integer> g = new AdjacencyMapGraph<>(false);
-        TreeSet<String> labels = new TreeSet<>();
-        HashMap<String, Vertex<String>> verts = new HashMap<>();
-
-
-        try (Reader reader = new FileReader("data.json")) {
-            JSONArray users = (JSONArray) parser.parse(reader);
-            for (Object u : users) {
-                JSONObject user = (JSONObject) u;
-                String user_id = (String) user.get("user_id");
-                labels.add(user_id);
-                String friendString = (String) user.get("friends");
-                String[] friends = friendString.replace(" ", "").split(",");
-                for (String s : friends) {
-                    labels.add(s);
-
-                }
-            }
-            for (String label : labels) {
-                verts.put(label, g.insertVertex(label));
-            }
-
-            for (Object u : users) {
-                JSONObject user = (JSONObject) u;
-                String user_id = (String) user.get("user_id");
-                String friendString = (String) user.get("friends");
-                String[] friends = friendString.replace(" ", "").split(",");
-                for (String s : friends) {
-                    if (g.getEdge(verts.get(user_id), verts.get(s)) == null) {
-                        g.insertEdge(verts.get(user_id), verts.get(s), 1);
-                    }
-                }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        System.out.println(g);
     }
 }
 
@@ -164,6 +123,47 @@ class GraphDraw extends JPanel {
 
             g.drawString(n.name, n.x - f.stringWidth(n.name) / 2, n.y + f.getHeight() / 2);
         }
+    }
+
+    public static Graph<String, Integer> generateAdjacencyMapGraphFromData() {
+        JSONParser parser = new JSONParser();
+
+        //By Default, the dataset is undirected by default
+        Graph<String, Integer> g = new AdjacencyMapGraph<>(false);
+        TreeSet<String> labels = new TreeSet<>();
+        HashMap<String, Vertex<String>> verts = new HashMap<>();
+
+        try (Reader reader = new FileReader("data.json")) {
+            JSONArray users = (JSONArray) parser.parse(reader);
+            for (Object u : users) {
+                JSONObject user = (JSONObject) u;
+                String user_id = (String) user.get("user_id");
+                labels.add(user_id);
+                String friendString = (String) user.get("friends");
+                String[] friends = friendString.replace(" ", "").split(",");
+                for (String s : friends) {
+                    labels.add(s);
+                }
+            }
+            for (String label : labels) {
+                verts.put(label, g.insertVertex(label));
+            }
+            for (Object u : users) {
+                JSONObject user = (JSONObject) u;
+                String user_id = (String) user.get("user_id");
+                String friendString = (String) user.get("friends");
+                String[] friends = friendString.replace(" ", "").split(",");
+                for (String s : friends) {
+                    if (g.getEdge(verts.get(user_id), verts.get(s)) == null) {
+                        g.insertEdge(verts.get(user_id), verts.get(s), 1);
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return g;
     }
 
     public static Graph<String, Integer> graphFromEdgelist(String[][] edges, boolean directed) {
