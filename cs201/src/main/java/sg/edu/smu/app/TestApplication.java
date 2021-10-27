@@ -55,8 +55,6 @@ public class TestApplication {
         frame.getContentPane().add(BorderLayout.SOUTH, panel);
         frame.setVisible(true);
 
-        System.out.println("Hello world");
-
         JSONParser parser = new JSONParser();
 
         Graph<String, Integer> g = new AdjacencyMapGraph<>(false);

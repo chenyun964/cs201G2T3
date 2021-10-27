@@ -21,7 +21,7 @@ public class DijkstraLinkedList {
   private Set<Integer> visited;
   private PriorityQueue<Node> pq;
   // private LinkedList<Node> ll;
-  
+
   public DijkstraLinkedList(int numVertices) {
     this.numVertices = numVertices;
     this.distArr = new int[numVertices + 1];
