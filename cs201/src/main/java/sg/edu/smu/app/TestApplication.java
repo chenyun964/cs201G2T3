@@ -86,10 +86,9 @@ public class TestApplication {
 
         long startTime = System.nanoTime();
         Graph<String, Integer> g = generateAdjacencyMapGraphFromData(users);
-        System.out.println(g);
         long endTime = System.nanoTime();
         long totalTime = endTime - startTime;
-        System.out.println(totalTime / 1000000000.0 + " seconds");
+        System.out.println("Time to Load Graph: " + totalTime / 1000000000.0 + "s");
 
         Vertex<String> v1 = findVertex(g, "zzrA6bRsAxj_qXui0SyBwQ");
         Vertex<String> v2 = findVertex(g, "PZW77I6qXeM0RQjo1kGBUg");
@@ -97,12 +96,14 @@ public class TestApplication {
         long startTime2 = System.nanoTime();
         Map<Vertex<String>, Integer> a = GraphAlgorithms.shortestPathLengths(g, v1);
         a.entrySet().forEach(element -> {
-            if (element.getKey().getElement().equals(v2.getElement()))
-                        element.getValue());
+            if (element.getKey().getElement().equals(v2.getElement())){
+                System.out.println("Stesp: " + element.getValue());
+                return;
+            }
         });
         long endTime2 = System.nanoTime();
         long totalTime2 = endTime2 - startTime2;
-        System.out.println(totalTime2 / 1000000000.0 + " seconds");
+        System.out.println("Time to Compute Path: " + totalTime2 / 1000000000.0 + "s");
     }
 
     public static Vertex<String> findVertex(Graph<String, Integer> g, String element) {
