@@ -22,3 +22,8 @@ Clear all installed dependencies and re-install the dependencies in the POM.XML
 From ID: NDaBlK6S3HTdWQPDAz6vXA
 
 To ID: zyTN5sTNbCfRLKZ0xzORpg
+
+# Data
+All data sets are stored in side `data` Folder
+
+

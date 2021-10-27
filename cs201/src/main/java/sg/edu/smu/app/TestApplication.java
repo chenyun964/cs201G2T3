@@ -10,6 +10,7 @@ import org.json.simple.parser.JSONParser;
 import sg.edu.smu.app.datastructures.AdjacencyMapGraph;
 import sg.edu.smu.app.datastructures.Graph;
 import sg.edu.smu.app.datastructures.Vertex;
+import sg.edu.smu.app.datastructures.Edge;
 
 import java.io.FileReader;
 import java.io.Reader;
@@ -67,7 +68,7 @@ public class TestApplication {
         frame.add(graph);
 
         // Adding Components to the frame.
-        frame.getContentPane().add(BorderLayout.SOUTH, panel);
+        frame.getContentPane().add(BorderLayout.NORTH, panel);
         frame.setVisible(true);
     }
 
@@ -92,9 +93,9 @@ public class TestApplication {
                 String[] friends = friendString.replace(" ", "").split(",");
                 for (String s : friends) {
                     labels.add(s);
-
                 }
             }
+
             for (String label : labels) {
                 verts.put(label, g.insertVertex(label));
             }
@@ -110,14 +111,20 @@ public class TestApplication {
                     }
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         long endTime = System.nanoTime();
         long totalTime = endTime - startTime;
         System.out.println(totalTime / 1000000000.0 + " seconds");
 
-        // System.out.println(g);
+        try {
+            String from = "UsEEqpvQJHymw4u-7Wy5tA0";
+            int outgoing = g.outDegree(verts.get(from));
+            System.out.println(outgoing);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
