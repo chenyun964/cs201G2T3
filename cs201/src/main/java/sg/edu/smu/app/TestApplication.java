@@ -106,7 +106,7 @@ public class TestApplication {
         Vertex<Integer> v2 = findVertex(g, 14);
 
         long startTime2 = System.nanoTime();
-        Map<Vertex<Integer>, Integer> a = GraphAlgorithms.shortestPathLengths(g, v1);
+        sg.edu.smu.app.datastructures.Map<Vertex<Integer>, Integer> a = GraphAlgorithms.shortestPathLengths(g, v1);
         a.entrySet().forEach(element -> {
             if (element.getKey().getElement().equals(v2.getElement())) {
                 System.out.printf("from %s to Steps to %s: %d\n", mapList.get(v1.getElement()),
