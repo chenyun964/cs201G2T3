@@ -83,21 +83,32 @@ public class TestApplication {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        HashMap<Integer, String> mapList = new HashMap<>();
+        Graph<Integer, Integer> g = new AdjacencyMapGraph<>(false);
+        HashMap<String, Vertex<Integer>> verts = new HashMap<>();
+
+        TreeSet<String> labels = getLabels(users);
+        Integer n = 0;
+        for (String label : labels) {
+            mapList.put(n, label);
+            verts.put(label, g.insertVertex(++n));
+        }
 
         long startTime = System.nanoTime();
-        Graph<String, Integer> g = generateAdjacencyMapGraphFromData(users);
+        g = generateAdjacencyMapGraphFromData(users, g, verts);
         long endTime = System.nanoTime();
         long totalTime = endTime - startTime;
         System.out.println("Time to Load Graph: " + totalTime / 1000000000.0 + "s");
-
-        Vertex<String> v1 = findVertex(g, "zzrA6bRsAxj_qXui0SyBwQ");
-        Vertex<String> v2 = findVertex(g, "PZW77I6qXeM0RQjo1kGBUg");
+        Vertex<Integer> v1 = findVertex(g, 3);
+        Vertex<Integer> v2 = findVertex(g, 14);
 
         long startTime2 = System.nanoTime();
-        Map<Vertex<String>, Integer> a = GraphAlgorithms.shortestPathLengths(g, v1);
+        Map<Vertex<Integer>, Integer> a = GraphAlgorithms.shortestPathLengths(g, v1);
         a.entrySet().forEach(element -> {
-            if (element.getKey().getElement().equals(v2.getElement())){
-                System.out.println("Stesp: " + element.getValue());
+            if (element.getKey().getElement().equals(v2.getElement())) {
+                System.out.printf("from %s to Steps to %s: %d\n",
+                        mapList.get(v1.getElement()), mapList.get(v2.getElement()),
+                        element.getValue());
                 return;
             }
         });
@@ -106,10 +117,10 @@ public class TestApplication {
         System.out.println("Time to Compute Path: " + totalTime2 / 1000000000.0 + "s");
     }
 
-    public static Vertex<String> findVertex(Graph<String, Integer> g, String element) {
-        Iterator<Vertex<String>> it = g.vertices().iterator();
+    public static Vertex<Integer> findVertex(Graph<Integer, Integer> g, Integer element) {
+        Iterator<Vertex<Integer>> it = g.vertices().iterator();
         while (it.hasNext()) {
-            Vertex<String> v = it.next();
+            Vertex<Integer> v = it.next();
             if (v.getElement().equals(element)) {
                 return v;
             }
@@ -117,12 +128,8 @@ public class TestApplication {
         return null;
     }
 
-    public static Graph<String, Integer> generateAdjacencyMapGraphFromData(JSONArray users) {
-
-        Graph<String, Integer> g = new AdjacencyMapGraph<>(false);
+    public static TreeSet<String> getLabels(JSONArray users) {
         TreeSet<String> labels = new TreeSet<>();
-        HashMap<String, Vertex<String>> verts = new HashMap<>();
-
         for (Object u : users) {
             JSONObject user = (JSONObject) u;
             String user_id = (String) user.get("user_id");
@@ -133,9 +140,11 @@ public class TestApplication {
                 labels.add(s);
             }
         }
-        for (String label : labels) {
-            verts.put(label, g.insertVertex(label));
-        }
+        return labels;
+    }
+
+    public static Graph<Integer, Integer> generateAdjacencyMapGraphFromData(JSONArray users,
+                                                                            Graph<Integer, Integer> g, HashMap<String, Vertex<Integer>> verts) {
         for (Object u : users) {
             JSONObject user = (JSONObject) u;
             String user_id = (String) user.get("user_id");
