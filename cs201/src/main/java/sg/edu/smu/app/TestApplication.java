@@ -94,7 +94,7 @@ public class TestApplication {
         Integer n = 0;
         for (String label : labels) {
             mapList.put(n, label);
-            verts.put(label, g.insertVertex(++n));
+            verts.put(label, g.insertVertex(n++));
         }
 
         long startTime = System.nanoTime();
@@ -127,7 +127,7 @@ public class TestApplication {
 
         System.out.println();
         long startTime3 = System.nanoTime();
-        BFSqueue<String> bfs = new BFSqueue<>();
+        BFSqueue<Integer> bfs = new BFSqueue<>();
         bfs.printShortestDistance(g, v1, v2);
         long endTime3 = System.nanoTime();
         long totalTime3 = endTime3 - startTime3;
