@@ -92,13 +92,13 @@ public class TestApplication {
         System.out.println(totalTime / 1000000000.0 + " seconds");
 
         Vertex<String> v1 = findVertex(g, "zzrA6bRsAxj_qXui0SyBwQ");
-        // Vertex<String> v2 = findVertex(g, "PZW77I6qXeM0RQjo1kGBUg");
+        Vertex<String> v2 = findVertex(g, "PZW77I6qXeM0RQjo1kGBUg");
 
         long startTime2 = System.nanoTime();
         Map<Vertex<String>, Integer> a = GraphAlgorithms.shortestPathLengths(g, v1);
         a.entrySet().forEach(element -> {
-            System.out.printf("from %s to %s: %d\n", v1.getElement(), element.getKey().getElement(),
-                    element.getValue());
+            if (element.getKey().getElement().equals(v2.getElement()))
+                        element.getValue());
         });
         long endTime2 = System.nanoTime();
         long totalTime2 = endTime2 - startTime2;
