@@ -1,90 +1,143 @@
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.*;
 
-public class Dijkstra {
-    boolean complete = false;
-    int size = 0;
-    ArrayList<Node> paths = new ArrayList<Node>();
-    ArrayList<Node> visited = new ArrayList<Node>();
-    Queue<Node> pathTable;
+// Data structure to store graph edges
+class Edge
+{
+	int source, dest, weight;
 
-    public Dijkstra(Node[] paths, Node start) {
-        // adding nodes to the unvisited array
-        for (Node path : paths) {
-            this.paths.add(path);
-        }
-        pathTable = new PriorityQueue<Node>(paths.length, comp);
+	public Edge(int source, int dest, int weight) {
+		this.source = source;
+		this.dest = dest;
+		this.weight = weight;
+	}
+};
 
-        // calling with Dijkstra with the source
-        DijkstraPath(start);
-    }
+// Data structure to store heap nodes
+class Node
+{
+	int vertex, weight;
 
-    public void DijkstraPath(Node source) {
-        this.paths.remove(source);
-        visited.add(source);
+	public Node(int vertex, int weight) {
+		this.vertex = vertex;
+		this.weight = weight;
+	}
+};
 
-        Node n = source;
-        // Check the adjacent nodes and move forward
-        int count = 0;
-        while (count != 7) {
-            // find the adjacent nodes
-            for (Object key : n.adjacentNodes.keySet()) {
-                Node currentNode = (Node) key;
+// class to represent a graph object
+class Graph
+{
+	// An array of Lists to represent adjacency list
+	List<List<Edge>> adjList = null;
 
-                // if visited don't go through it
-                if (visited.contains(currentNode)) {
-                    continue;
-                }
-                int newPathCost = n.pathCost + (int) n.adjacentNodes.get(currentNode);
-                if (currentNode.pathCost == 0) {
-                    currentNode.pathCost = newPathCost;
-                } else if (currentNode.pathCost < newPathCost) {
+	// Constructor
+	Graph(List<Edge> edges, int N)
+	{
+		adjList = new ArrayList<>(N);
 
-                } else {
-                    // System.out.println("Ekhane " + currentNode.name);
-                    currentNode.pathCost = newPathCost;
-                }
+		for (int i = 0; i < N; i++) {
+			adjList.add(i, new ArrayList<>());
+		}
 
-                if (pathTable.contains(currentNode)) {
-                    pathTable.remove(currentNode);
-                    pathTable.add(currentNode);
-                } else {
-                    pathTable.add(currentNode);
-                }
+		// add edges to the undirected graph
+		for (Edge edge: edges) {
+			adjList.get(edge.source).add(edge);
+		}
+	}
+}
 
-            }
+class Dijkstra
+{
+	private static void printRoute(int prev[], int i)
+	{
+		if (i < 0)
+			return;
 
-            // give n a new value go through it <the lowest path cost data
-            Node temp = (Node) pathTable.poll();
-            n = temp;
-            visited.add(temp);
-            count++;
+		printRoute(prev, prev[i]);
+		System.out.print(i + " ");
+	}
 
-        }
+	// Run Dijkstra's algorithm on given graph
+	public static void shortestPath(Graph graph, int source, int N)
+	{
+		// create min heap and push source node having distance 0
+		PriorityQueue<Node> minHeap = new PriorityQueue<>(
+								(lhs, rhs) -> lhs.weight - rhs.weight);
 
-        // printing the final output
-        System.out.println("Shortest path distance from source: " + source.name);
-        for (Object iter : paths.toArray()) {
-            Node temp = (Node) iter;
-            String cost = Integer.toString(temp.pathCost);
+		minHeap.add(new Node(source, 0));
 
-            if (!visited.contains(temp)) {
-                cost = "Infinity";
-            }
-            System.out.println(temp.name + " " + cost);
-        }
-    }
+		// set infinite distance from source to v initially
+		List<Integer> dist = new ArrayList<>(
+					Collections.nCopies(N, Integer.MAX_VALUE));
 
-    public static Comparator<Node> comp = new Comparator<Node>() {
-        public int compare(Node one, Node two) {
-            if (one.pathCost > two.pathCost) {
-                return 1;
-            } else {
-                return -1;
-            }
+		// distance from source to itself is zero
+		dist.set(source, 0);
 
-        }
-    };
+		// boolean array to track vertices for which minimum
+		// cost is already found
+		boolean[] done = new boolean[N];
+		done[0] = true;
+
+		// stores predecessor of a vertex (to print path)
+		int prev[] = new int[N];
+		prev[0] = -1;
+
+		// run till minHeap is not empty
+		while (!minHeap.isEmpty())
+		{
+			// Remove and return best vertex
+			Node node = minHeap.poll();
+
+			// get vertex number
+			int u = node.vertex;
+
+			// do for each neighbor v of u
+			for (Edge edge: graph.adjList.get(u))
+			{
+				int v = edge.dest;
+				int weight = edge.weight;
+
+				// Relaxation step
+				if (!done[v] && (dist.get(u) + weight) < dist.get(v))
+				{
+					dist.set(v, dist.get(u) + weight);
+					prev[v] = u;
+					minHeap.add(new Node(v, dist.get(v)));
+				}
+			}
+
+			// marked vertex u as done so it will not get picked up again
+			done[u] = true;
+		}
+
+		for (int i = 1; i < N; ++i)
+		{
+			System.out.print("Path from vertex 0 to vertex " + i +
+							" has minimum cost of " + dist.get(i) +
+							" and the route is [ ");
+			printRoute(prev, i);
+			System.out.println("]");
+		}
+	}
+
+	public static void main(String[] args)
+	{
+		// initialize edges as per above diagram
+		// (u, v, w) triplet represent undirected edge from
+		// vertex u to vertex v having weight w
+		List<Edge> edges = Arrays.asList(
+				new Edge(0, 1, 10), new Edge(0, 4, 3),
+				new Edge(1, 2, 2), new Edge(1, 4, 4),
+				new Edge(2, 3, 9), new Edge(3, 2, 7),
+				new Edge(4, 1, 1), new Edge(4, 2, 8),
+				new Edge(4, 3, 2)
+		);
+
+		// Set number of vertices in the graph
+		final int N = 5;
+
+		// construct graph
+		Graph graph = new Graph(edges, N);
+
+		shortestPath(graph, 0, N);
+	}
 }
