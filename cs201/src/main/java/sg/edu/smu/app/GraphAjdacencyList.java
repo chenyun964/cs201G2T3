@@ -86,13 +86,10 @@ public class GraphAjdacencyList {
             System.out.print(path.get(i) + " ");
         }
 
-
     }
 
     public ArrayList<ArrayList<Integer>> getGraph() {
         return adj;
     }
-
-
 
 }
