@@ -191,9 +191,11 @@ public class TestApplication {
         v2 = null;
         mapList = null;
         verts = null;
-        System.out.println("Generating adj map");
+
+
+        System.out.println("\n\n\nGenerating adj map for Djikstra Algo");
         JSONObject data = null;
-        try (Reader reader = new FileReader("sample2.json")) {
+        try (Reader reader = new FileReader("sample3.json")) {
             data = (JSONObject) parser.parse(reader);
 
             labels = new TreeSet<>();
@@ -208,7 +210,11 @@ public class TestApplication {
             
             Map<String, Integer> uniqueList = new HashMap<>();
             n = 0; // convert all user id from 0 to n
+            int id1 = 0;
+            int id2 = 0;
             for (String label : labels) {
+                if (label.equals("YiSFCdyb0dJQrSAGRzkzAw")) id1 = n;
+                if (label.equals("dxqHh0JYQg9_X7whNAWWVA")) id2 = n;
                 uniqueList.put(label, n++);
             }
 
@@ -232,39 +238,37 @@ public class TestApplication {
             data = null;
             labels = null;
             uniqueList = null;
-            int id1 = 18034;
-            int id2 = 21217;
             int numVertices = adjMap.size();
 
             /**
              * Using PQ
              */
             System.out.println("Loaded adjMap of size: " + adjMap.size());
-            System.out.println("\n\n");
+            System.out.println("From id " + id1 + " to " + id2 + " \n\n");
             
-            System.out.println("Experiments on Dji Algo: ");
+            System.out.println("Starting Experiments on Djikstra Algo: ");
             System.out.println("Actual data using PQ: ");
             
             startTime = System.nanoTime();
             DijkstraLinkedList dji = new DijkstraLinkedList(numVertices);
-            dji.adapter(adjMap, id1, true);
+            dji.dijkstra_PQ(adjMap, id1);
             // for (int i = 0; i < dji.distArr.length; i++)
-            System.out.println(id1 + " to " + id2 + " is " + dji.distArr[id2]);
+            System.out.println("Shortest path from " + id1 + " to " + id2 + " is " + dji.distArr[id2]);
 
             endTime = System.nanoTime();
             totalTime = endTime - startTime;
             System.out.println("Time to perform search: " + totalTime / divider + "s");
             System.out.println();
-
+            
             /**
              * Using Linked List
              */
             System.out.println("Actual data using LL: ");
-
+            
             startTime = System.nanoTime();
             dji = new DijkstraLinkedList(numVertices);
-            dji.adapter(adjMap, id1, false);
-            System.out.println(id1 + " to " + id2 + " is " + dji.distArr[id2]);
+            dji.dijkstra_LL(adjMap, id1);
+            System.out.println("Shortest path from " + id1 + " to " + id2 + " is " + dji.distArr[id2]);
             
             endTime = System.nanoTime();
             totalTime = endTime - startTime;
