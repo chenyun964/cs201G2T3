@@ -71,7 +71,7 @@ public class TestApplication {
         startTime = System.nanoTime();
         g = generateAdjacencyMapFromData(users, g, verts);
         sg.edu.smu.app.datastructures.Map<Vertex<Integer>, Integer> a = GraphAlgorithms.shortestPathLengths(g, v1, v2);
-        System.out.println("Steps: " + a.get(v2));
+        System.out.println("Shortest path length is: " + a.get(v2));
         endTime = System.nanoTime();
         totalTime = endTime - startTime;
         System.out.println("Time to Compute Path: " + totalTime / divider + "s");
@@ -90,7 +90,9 @@ public class TestApplication {
         System.out.println("Adjacency List + Djikstra PQ");
         runtime = Runtime.getRuntime();
         startTime = System.nanoTime();
+        // Generate Adjacency List 
         GraphAjdacencyList adjList = generateAdjacencyListFromData(users, verts);
+        // Find shortest path 
         adjList.printShortestDistance(v1.getElement(), v2.getElement());
         endTime = System.nanoTime();
         totalTime = endTime - startTime;
@@ -151,17 +153,15 @@ public class TestApplication {
 
         Map<String, Integer> uniqueList = new HashMap<>();
         n = 0; // convert all user id from 0 to n
-        int id1 = 0;
-        int id2 = 0;
+
         for (String label : labels) {
-            if (label.equals("YiSFCdyb0dJQrSAGRzkzAw"))
-                id1 = n;
-            if (label.equals("dxqHh0JYQg9_X7whNAWWVA"))
-                id2 = n;
             uniqueList.put(label, n++);
         }
 
-        Map<Integer, List<CustomNode>> adjMap = new HashMap();
+        int id1 = uniqueList.get("YiSFCdyb0dJQrSAGRzkzAw");
+        int id2 = uniqueList.get("dxqHh0JYQg9_X7whNAWWVA");
+
+        Map<Integer, List<CustomNode>> adjMap = new HashMap<>();
 
         for (String label : labels) {
             try {
@@ -188,30 +188,26 @@ public class TestApplication {
         System.out.println("\n--------------------------------------------------\n");
         
         /**
-         * Using PQ
+         * Adjacency Map + Djikstra PQ
          */
-        System.out.println("Starting Experiments on Djikstra Algo: ");
-        System.out.println("Actual data using PQ: ");
-
+        System.out.println("Adjacency Map + Djikstra PQ");
         startTime = System.nanoTime();
         DijkstraLinkedList dji = new DijkstraLinkedList(numVertices);
         dji.dijkstra_PQ(adjMap, id1);
-        // for (int i = 0; i < dji.distArr.length; i++)
-        System.out.println("Shortest path from " + id1 + " to " + id2 + " is " + dji.distArr[id2]);
-
+        System.out.println("Shortest path length is: " +  dji.distArr[id2]);
         endTime = System.nanoTime();
         totalTime = endTime - startTime;
         System.out.println("Time to perform search: " + totalTime / divider + "s");
         System.out.println("\n--------------------------------------------------\n");
 
         /**
-         * Using Linked List
+         * Adjacency Map + Djikstra LL
          */
-        System.out.println("Actual data using LL: ");
+        System.out.println("Adjacency Map + Djikstra LL");
         startTime = System.nanoTime();
         dji = new DijkstraLinkedList(numVertices);
         dji.dijkstra_LL(adjMap, id1);
-        System.out.println("Shortest path from " + id1 + " to " + id2 + " is " + dji.distArr[id2]);
+        System.out.println("Shortest path length is: " + dji.distArr[id2]);
         endTime = System.nanoTime();
         totalTime = endTime - startTime;
         System.out.println("Time to perform search: " + totalTime / divider + "s");
