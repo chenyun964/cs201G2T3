@@ -23,7 +23,7 @@ import java.util.*;
 import java.util.List;
 
 public class TestApplication {
-
+    private static final long MEGABYTE = 1024L * 1024L;
     String fromId;
     String toId;
     JTextField fromIdInput;
@@ -120,29 +120,63 @@ public class TestApplication {
         // Vertex<Integer> v1 = findVertex(g, new Random().nextInt(mapList.size()));
         // Vertex<Integer> v2 = findVertex(g, new Random().nextInt(mapList.size()));
 
+        Runtime runtime = Runtime.getRuntime();
         long startTime2 = System.nanoTime();
         sg.edu.smu.app.datastructures.Map<Vertex<Integer>, Integer> a = GraphAlgorithms.shortestPathLengths(g, v1, v2);
-
         System.out.printf("from: %s\nTo: %s\nSteps: %d\n", mapList.get(v1.getElement()), mapList.get(v2.getElement()),
                 a.get(v2));
         long endTime2 = System.nanoTime();
         long totalTime2 = endTime2 - startTime2;
         System.out.println("Time to Compute Path: " + totalTime2 / divider + "s");
 
+        // Get the Java runtime
+        // Run the garbage collector
+        runtime.gc();
+        // Calculate the used memory
+        long memory = runtime.totalMemory() - runtime.freeMemory();
+        System.out.println("Used memory is bytes: " + memory);
+        System.out.println("Used memory is megabytes: "
+                + bytesToMegabytes(memory));
+
+        System.out.println("--------------------------------------------------");
+        Runtime runtime3 = Runtime.getRuntime();
+        long startTime4 = System.nanoTime();
         GraphAjdacencyList adjList = generateAdjacencyListFromData(users, verts);
+        adjList.printShortestDistance(v1.getElement(), v2.getElement());
+        long endTime4 = System.nanoTime();
+        long totalTime4 = endTime4 - startTime4;
+        System.out.println();
+        System.out.println("Time to Compute Path: " + totalTime4 / divider + "s");
+        // Run the garbage collector
+        runtime3.gc();
+        // Calculate the used memory
+        long memory3 = runtime3.totalMemory() - runtime3.freeMemory();
+        System.out.println("Used memory is bytes: " + memory3);
+        System.out.println("Used memory is megabytes: "
+                + bytesToMegabytes(memory3));
+        System.out.println("\n--------------------------------------------------");
 
         System.out.println();
         long startTime3 = System.nanoTime();
+        Runtime runtime2 = Runtime.getRuntime();
         BFSqueue<Integer> bfs = new BFSqueue<>();
         bfs.printShortestDistance(g, v1, v2);
         long endTime3 = System.nanoTime();
         long totalTime3 = endTime3 - startTime3;
         System.out.println();
         System.out.println("Time to Compute Path: " + totalTime3 / divider + "s");
+        // Run the garbage collector
+        runtime2.gc();
+        // Calculate the used memory
+        long memory2 = runtime2.totalMemory() - runtime2.freeMemory();
+        System.out.println("Used memory is bytes: " + memory2);
+        System.out.println("Used memory is megabytes: "
+                + bytesToMegabytes(memory2));
 
-        GraphAjdacencyMatrix graph = new GraphAjdacencyMatrix(mapList.size());
-        graph = generateAdjacencyMatrixFromData(graph, users, verts);
-        graph.printGraph();
+//        GraphAjdacencyMatrix graph = new GraphAjdacencyMatrix(mapList.size());
+//        graph = generateAdjacencyMatrixFromData(graph, users, verts);
+//        graph.printGraph();
+
     }
 
     public static TreeSet<String> getLabels(JSONArray users) {
@@ -161,7 +195,7 @@ public class TestApplication {
     }
 
     public static Graph<Integer, Integer> generateAdjacencyMapFromData(JSONArray users, Graph<Integer, Integer> g,
-            HashMap<String, Vertex<Integer>> verts) {
+                                                                       HashMap<String, Vertex<Integer>> verts) {
 
         for (Object u : users) {
             JSONObject user = (JSONObject) u;
@@ -178,7 +212,7 @@ public class TestApplication {
     }
 
     public static GraphAjdacencyList generateAdjacencyListFromData(JSONArray users,
-            HashMap<String, Vertex<Integer>> userToInt) {
+                                                                   HashMap<String, Vertex<Integer>> userToInt) {
 
         GraphAjdacencyList ajdList = new GraphAjdacencyList(userToInt.size());
 
@@ -198,7 +232,7 @@ public class TestApplication {
     }
 
     public static GraphAjdacencyMatrix generateAdjacencyMatrixFromData(GraphAjdacencyMatrix g, JSONArray users,
-            HashMap<String, Vertex<Integer>> userToInt) {
+                                                                       HashMap<String, Vertex<Integer>> userToInt) {
 
         for (Object u : users) {
             JSONObject user = (JSONObject) u;
@@ -210,5 +244,9 @@ public class TestApplication {
             }
         }
         return g;
+    }
+
+    public static long bytesToMegabytes(long bytes) {
+        return bytes / MEGABYTE;
     }
 }
