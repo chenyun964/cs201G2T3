@@ -7,10 +7,7 @@ import sg.edu.smu.app.datastructures.Edge;
 import sg.edu.smu.app.datastructures.Graph;
 import sg.edu.smu.app.datastructures.Vertex;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 
 public class BFSqueue<V> {
     public boolean BFS(Graph<V, Integer> graph, Vertex<V> src, Vertex<V> dest, 
