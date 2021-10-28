@@ -185,44 +185,41 @@ public class TestApplication {
             int id1 = 18034;
             int id2 = 21217;
             int numVertices = adjMap.size();
-            // DijkstraLinkedList dji = new DijkstraLinkedList(9);
-            // int source = 1;
-            // dji.adapter(DijkstraLinkedList.getAdjList(), source);
-            // System.out.println("The shorted path from node :");
-            
-            // for (int i = 0; i < dji.distArr.length; i++)
-            //   System.out.println(source + " to " + i + " is " + dji.distArr[i]);
 
+            /**
+             * Using PQ
+             */
             System.out.println("Loaded adjMap of size: " + adjMap.size());
-            System.out.println("Actual data: ");
-
+            System.out.println("\n\n");
+            
+            System.out.println("Experiments on Dji Algo: ");
+            System.out.println("Actual data using PQ: ");
+            
             startTime = System.nanoTime();
             DijkstraLinkedList dji = new DijkstraLinkedList(numVertices);
-            dji.adapter(adjMap, id1);
+            dji.adapter(adjMap, id1, true);
             // for (int i = 0; i < dji.distArr.length; i++)
+            System.out.println(id1 + " to " + id2 + " is " + dji.distArr[id2]);
+
+            endTime = System.nanoTime();
+            totalTime = endTime - startTime;
+            System.out.println("Time to perform search: " + totalTime / divider + "s");
+            System.out.println();
+
+            /**
+             * Using Linked List
+             */
+            System.out.println("Actual data using LL: ");
+
+            startTime = System.nanoTime();
+            dji = new DijkstraLinkedList(numVertices);
+            dji.dijkstra_LL(adjMap, id1);
             System.out.println(id1 + " to " + id2 + " is " + dji.distArr[id2]);
             
             endTime = System.nanoTime();
             totalTime = endTime - startTime;
             System.out.println("Time to perform search: " + totalTime / divider + "s");
             System.out.println();
-
-            // if (adjMap.get(18034).size() > 0) {
-            //     List<CustomNode> l1 = adjMap.get(18034);
-            //     for (CustomNode node: l1) {
-            //         System.out.println(node.node);
-            //     }
-            // }
-
-            // testing
-            // for (int i = 0; i < 1000; i ++) {
-            //     if (adjMap.get(i).size() > 0) {
-            //         List<CustomNode> l1 = adjMap.get(i);
-            //         for (CustomNode node: l1) {
-            //             System.out.println(node.node);
-            //         }
-            //     }
-            // }
 
 
         } catch (Exception e) {

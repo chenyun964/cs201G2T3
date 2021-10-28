@@ -25,7 +25,6 @@ public class DijkstraLinkedList {
   public int distArr[];
   public Set<Integer> visited;
   public PriorityQueue<CustomNode> pq;
-  // private LinkedList<Node> ll;
 
   public DijkstraLinkedList(int numVertices, Map<Integer, List<CustomNode>> adjMap) {
     this.numVertices = numVertices;
@@ -46,7 +45,7 @@ public class DijkstraLinkedList {
     //
     DijkstraLinkedList dji = new DijkstraLinkedList(9);
     int source = 1;
-    dji.adapter(getAdjList(), source);
+    dji.adapter(getAdjList(), source, true);
     System.out.println("The shorted path from node :");
 
     for (int i = 0; i < dji.distArr.length; i++)
@@ -65,17 +64,24 @@ public class DijkstraLinkedList {
 
   }
 
-  public void adapter(Object input, int source) {
+  public void adapter(Object input, int source, boolean pq) {
     if (input instanceof Map<?, ?>) {
       adjList = (Map<Integer, List<CustomNode>>) input;
-      dijkstra(adjList, source);
+      if (pq) dijkstra_PQ(adjList, source);
+      else dijkstra_LL(adjList, source);
 
     } else {
       System.out.println("");
     }
   }
 
-  public void dijkstra(Map<Integer, List<CustomNode>> adj, int source) {
+  /**
+   * LAZY COPY AND PASTE SAME CODE FOR PQ AND LL
+   * Duplicated code
+   * @param adj
+   * @param source
+   */
+  public void dijkstra_PQ(Map<Integer, List<CustomNode>> adj, int source) {
     // init all nodes with distance of infinity first
     for (int i = 0; i < numVertices; i++)
       distArr[i] = Integer.MAX_VALUE;
@@ -116,6 +122,62 @@ public class DijkstraLinkedList {
 
           // Add the current node to the queue
           pq.add(new CustomNode(v.node, distArr[v.node]));
+        }
+      }
+    }
+  }
+  
+  /**
+   * LAZY SO COPY AND PASTE
+   * @param adj
+   * @param source
+   */
+  public void dijkstra_LL(Map<Integer, List<CustomNode>> adj, int source) {
+    // init all nodes with distance of infinity first
+
+    /**
+     * Lazy init so put here
+     */
+    SortedLinkedList ll = new SortedLinkedList();
+    
+    for (int i = 0; i < numVertices; i++)
+      distArr[i] = Integer.MAX_VALUE;
+
+    ll.add(new CustomNode(source, 0));
+    distArr[source] = 0;
+
+    // loop until all connected vertices are visited
+    while (visited.size() != numVertices) {
+      // or until no more neighbour
+      if (ll.isEmpty())
+        return;
+
+      // get the current node which has the shortest cost
+      int u = ll.removeMin().node;
+      // if already visited next loop
+      if (visited.contains(u))
+        continue;
+      visited.add(u);
+
+      // process neighbours
+      int edgeDistance = -1;
+      int newDistance = -1;
+
+      // get the neighbours of the current lowest cost node
+      for (int i = 0; i < adj.get(u).size(); i++) { // loop through neighbours of u
+        CustomNode v = adj.get(u).get(i); // get neighbour
+
+        // If current node hasn't already been processed
+        if (!visited.contains(v.node)) {
+          edgeDistance = v.cost; // get distance from u to v
+          newDistance = distArr[u] + edgeDistance; // distance from current to neighbour plus neighbour cost
+
+          // If new distance is cheaper in cost
+          if (newDistance < distArr[v.node])
+            distArr[v.node] = newDistance;
+
+          // Add the current node to the queue
+          ll.add(new CustomNode(v.node, distArr[v.node]));
         }
       }
     }
