@@ -11,11 +11,13 @@ import org.json.simple.parser.JSONParser;
 
 import sg.edu.smu.app.bfsqueue.BFSqueue;
 import sg.edu.smu.app.datastructures.AdjacencyMapGraph;
+import sg.edu.smu.app.datastructures.CustomNode;
 import sg.edu.smu.app.datastructures.Graph;
 import sg.edu.smu.app.datastructures.GraphAlgorithms;
 import sg.edu.smu.app.datastructures.Vertex;
 import sg.edu.smu.app.datastructures.Edge;
 import sg.edu.smu.app.DijkstraAlgo.*;
+import sg.edu.smu.app.DjikstraLinkedList.DijkstraLinkedList;
 
 import java.io.FileReader;
 import java.io.Reader;
@@ -82,7 +84,7 @@ public class TestApplication {
         System.out.println("Load Date...");
         JSONParser parser = new JSONParser();
         JSONArray users = null;
-        try (Reader reader = new FileReader("1k.json")) {
+        try (Reader reader = new FileReader("100.json")) {
             users = (JSONArray) parser.parse(reader);
         } catch (Exception e) {
             e.printStackTrace();
@@ -94,7 +96,7 @@ public class TestApplication {
         // Key: user_id
         // Value: unique integer
         HashMap<String, Vertex<Integer>> verts = new HashMap<>();
-
+        
         Graph<Integer, Integer> g = new AdjacencyMapGraph<>(false);
 
         TreeSet<String> labels = getLabels(users);
@@ -103,7 +105,9 @@ public class TestApplication {
             mapList.put(n, label);
             verts.put(label, g.insertVertex(n++));
         }
-
+        labels = null;
+        n = null;
+        
         long startTime = System.nanoTime();
         g = generateAdjacencyMapFromData(users, g, verts);
         long endTime = System.nanoTime();
@@ -115,14 +119,18 @@ public class TestApplication {
         // Test input
         // From: "zzrA6bRsAxj_qXui0SyBwQ"
         // To: "PZW77I6qXeM0RQjo1kGBUg"
-        Vertex<Integer> v1 = verts.get("aPdlWUb9VU6qHUsuw10lSA");
-        Vertex<Integer> v2 = verts.get("2coXhGmKUShIEgn0ZeI2Fw");
+        Vertex<Integer> v1 = verts.get("bPEBX_5aRZA7StQ-WNPVDw");
+        Vertex<Integer> v2 = verts.get("DZfhIL6tnEb7I42cHuuT6A");
         // Vertex<Integer> v1 = findVertex(g, new Random().nextInt(mapList.size()));
         // Vertex<Integer> v2 = findVertex(g, new Random().nextInt(mapList.size()));
 
         Runtime runtime = Runtime.getRuntime();
+        
         long startTime2 = System.nanoTime();
+        System.out.println(v1 + " " + v2);
+
         sg.edu.smu.app.datastructures.Map<Vertex<Integer>, Integer> a = GraphAlgorithms.shortestPathLengths(g, v1, v2);
+        
         System.out.printf("from: %s\nTo: %s\nSteps: %d\n", mapList.get(v1.getElement()), mapList.get(v2.getElement()),
                 a.get(v2));
         long endTime2 = System.nanoTime();
@@ -177,6 +185,112 @@ public class TestApplication {
 //        graph = generateAdjacencyMatrixFromData(graph, users, verts);
 //        graph.printGraph();
 
+
+        g = null;
+        v1 = null;
+        v2 = null;
+        mapList = null;
+        verts = null;
+        System.out.println("Generating adj map");
+        JSONObject data = null;
+        try (Reader reader = new FileReader("sample2.json")) {
+            data = (JSONObject) parser.parse(reader);
+
+            labels = new TreeSet<>();
+            for (Object key: data.keySet()) {
+                labels.add((String) key);
+                JSONArray values = (JSONArray) data.get(key);
+                for (Object s : values) {
+                    labels.add((String) s);
+                }
+            }
+            System.out.println("Found unique labels: " + labels.size());
+            
+            Map<String, Integer> uniqueList = new HashMap<>();
+            n = 0; // convert all user id from 0 to n
+            for (String label : labels) {
+                uniqueList.put(label, n++);
+            }
+
+            Map<Integer, List<CustomNode>> adjMap = new HashMap();
+
+            for (String label: labels) {
+                try {
+                    JSONArray values = (JSONArray) data.get(label);
+                    List<CustomNode> l1 = new ArrayList<CustomNode>(); // list of node
+                    for (Object s : values) { // loop thru all values
+                        l1.add(new CustomNode(uniqueList.get((String) s), 1));
+                    }
+                    // l1.add(new Node(1, 1));
+                    adjMap.put(uniqueList.get(label), l1);
+
+                } catch (Exception e) {
+                    adjMap.put(uniqueList.get(label), new ArrayList<CustomNode>());
+                }
+            }
+            // memory clearing
+            data = null;
+            labels = null;
+            uniqueList = null;
+            int id1 = 18034;
+            int id2 = 21217;
+            int numVertices = adjMap.size();
+
+            /**
+             * Using PQ
+             */
+            System.out.println("Loaded adjMap of size: " + adjMap.size());
+            System.out.println("\n\n");
+            
+            System.out.println("Experiments on Dji Algo: ");
+            System.out.println("Actual data using PQ: ");
+            
+            startTime = System.nanoTime();
+            DijkstraLinkedList dji = new DijkstraLinkedList(numVertices);
+            dji.adapter(adjMap, id1, true);
+            // for (int i = 0; i < dji.distArr.length; i++)
+            System.out.println(id1 + " to " + id2 + " is " + dji.distArr[id2]);
+
+            endTime = System.nanoTime();
+            totalTime = endTime - startTime;
+            System.out.println("Time to perform search: " + totalTime / divider + "s");
+            System.out.println();
+
+            /**
+             * Using Linked List
+             */
+            System.out.println("Actual data using LL: ");
+
+            startTime = System.nanoTime();
+            dji = new DijkstraLinkedList(numVertices);
+            dji.adapter(adjMap, id1, false);
+            System.out.println(id1 + " to " + id2 + " is " + dji.distArr[id2]);
+            
+            endTime = System.nanoTime();
+            totalTime = endTime - startTime;
+            System.out.println("Time to perform search: " + totalTime / divider + "s");
+            System.out.println();
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        // GraphAjdacencyList adjList = generateAdjacencyListFromData(users, verts);
+
+        // System.out.println();
+        // long startTime3 = System.nanoTime();
+        // BFSqueue<Integer> bfs = new BFSqueue<>();
+        // bfs.printShortestDistance(g, v1, v2);
+        // long endTime3 = System.nanoTime();
+        // long totalTime3 = endTime3 - startTime3;
+        // System.out.println();
+        // System.out.println("Time to Compute Path: " + totalTime3 / divider + "s");
+        
+        // GraphAjdacencyMatrix graph = new GraphAjdacencyMatrix(mapList.size());
+        // generateAdjacencyMatrixFromData(graph, users, verts);
+        // graph.printGraph();
     }
 
     public static TreeSet<String> getLabels(JSONArray users) {
@@ -231,8 +345,8 @@ public class TestApplication {
         return ajdList;
     }
 
-    public static GraphAjdacencyMatrix generateAdjacencyMatrixFromData(GraphAjdacencyMatrix g, JSONArray users,
-                                                                       HashMap<String, Vertex<Integer>> userToInt) {
+    public static void generateAdjacencyMatrixFromData(GraphAjdacencyMatrix g, JSONArray users,
+            HashMap<String, Vertex<Integer>> userToInt) {
 
         for (Object u : users) {
             JSONObject user = (JSONObject) u;
@@ -243,7 +357,6 @@ public class TestApplication {
                 g.addEdge(id, userToInt.get(s).getElement());
             }
         }
-        return g;
     }
 
     public static long bytesToMegabytes(long bytes) {

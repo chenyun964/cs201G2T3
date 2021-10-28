@@ -1,6 +1,8 @@
 package sg.edu.smu.app.DjikstraLinkedList;
 
 import java.util.*;
+import sg.edu.smu.app.datastructures.CustomNode;
+
 // javac -d ./build DijkstraLinkedList.java 
 // java -cp ./build DijkstraLinkedList
 
@@ -15,47 +17,76 @@ public class DijkstraLinkedList {
   // each step find shortest path to a neighbour
   // repeat
 
-  private int numVertices;
-  private Map<Integer, List<Node>> adjList;
-  private int distArr[];
-  private Set<Integer> visited;
-  private PriorityQueue<Node> pq;
-  // private LinkedList<Node> ll;
+  /**
+   * Set all to public cus no encapsulation required
+   */
+  public int numVertices;
+  public Map<Integer, List<CustomNode>> adjList;
+  public int distArr[];
+  public Set<Integer> visited;
+  public PriorityQueue<CustomNode> pq;
 
+  public DijkstraLinkedList(int numVertices, Map<Integer, List<CustomNode>> adjMap) {
+    this.numVertices = numVertices;
+    this.distArr = new int[numVertices + 1];
+    this.visited = new HashSet<Integer>();
+    this.pq = new PriorityQueue<CustomNode>(numVertices, new CustomNode());
+    this.adjList = adjMap;
+  }
+  
   public DijkstraLinkedList(int numVertices) {
     this.numVertices = numVertices;
     this.distArr = new int[numVertices + 1];
     this.visited = new HashSet<Integer>();
-    this.pq = new PriorityQueue<Node>(numVertices, new Node());
+    this.pq = new PriorityQueue<CustomNode>(numVertices, new CustomNode());
   }
 
   public static void main(String[] args) {
     //
     DijkstraLinkedList dji = new DijkstraLinkedList(9);
     int source = 1;
-    dji.adapter(getAdjList(), source);
+    dji.adapter(getAdjList(), source, true);
     System.out.println("The shorted path from node :");
 
     for (int i = 0; i < dji.distArr.length; i++)
       System.out.println(source + " to " + i + " is " + dji.distArr[i]);
+
+    // System.out.println("Loading");
+    // JSONParser parser = new JSONParser();
+    // JSONArray users = null;
+    // try (Reader reader = new FileReader("100.json")) {
+    //   users = (JSONArray) parser.parse(reader);
+    // } catch (Exception e) {
+    //   e.printStackTrace();
+    // }
+    // System.out.println(users);
+    
+
   }
 
-  public void adapter(Object input, int source) {
+  public void adapter(Object input, int source, boolean pq) {
     if (input instanceof Map<?, ?>) {
-      adjList = (Map<Integer, List<Node>>) input;
-      dijkstra(adjList, source);
+      adjList = (Map<Integer, List<CustomNode>>) input;
+      if (pq) dijkstra_PQ(adjList, source);
+      else dijkstra_LL(adjList, source);
 
     } else {
       System.out.println("");
     }
   }
 
-  public void dijkstra(Map<Integer, List<Node>> adj, int source) {
+  /**
+   * LAZY COPY AND PASTE SAME CODE FOR PQ AND LL
+   * Duplicated code
+   * @param adj
+   * @param source
+   */
+  public void dijkstra_PQ(Map<Integer, List<CustomNode>> adj, int source) {
     // init all nodes with distance of infinity first
     for (int i = 0; i < numVertices; i++)
       distArr[i] = Integer.MAX_VALUE;
 
-    pq.add(new Node(source, 0));
+    pq.add(new CustomNode(source, 0));
     distArr[source] = 0;
 
     // loop until all connected vertices are visited
@@ -78,7 +109,7 @@ public class DijkstraLinkedList {
 
       // get the neighbours of the current lowest cost node
       for (int i = 0; i < adj.get(u).size(); i++) { // loop through neighbours of u
-        Node v = adj.get(u).get(i); // get neighbour
+        CustomNode v = adj.get(u).get(i); // get neighbour
 
         // If current node hasn't already been processed
         if (!visited.contains(v.node)) {
@@ -90,7 +121,63 @@ public class DijkstraLinkedList {
             distArr[v.node] = newDistance;
 
           // Add the current node to the queue
-          pq.add(new Node(v.node, distArr[v.node]));
+          pq.add(new CustomNode(v.node, distArr[v.node]));
+        }
+      }
+    }
+  }
+  
+  /**
+   * LAZY SO COPY AND PASTE
+   * @param adj
+   * @param source
+   */
+  public void dijkstra_LL(Map<Integer, List<CustomNode>> adj, int source) {
+    // init all nodes with distance of infinity first
+
+    /**
+     * Lazy init so put here
+     */
+    SortedLinkedList ll = new SortedLinkedList();
+    
+    for (int i = 0; i < numVertices; i++)
+      distArr[i] = Integer.MAX_VALUE;
+
+    ll.add(new CustomNode(source, 0));
+    distArr[source] = 0;
+
+    // loop until all connected vertices are visited
+    while (visited.size() != numVertices) {
+      // or until no more neighbour
+      if (ll.isEmpty())
+        return;
+
+      // get the current node which has the shortest cost
+      int u = ll.removeMin().node;
+      // if already visited next loop
+      if (visited.contains(u))
+        continue;
+      visited.add(u);
+
+      // process neighbours
+      int edgeDistance = -1;
+      int newDistance = -1;
+
+      // get the neighbours of the current lowest cost node
+      for (int i = 0; i < adj.get(u).size(); i++) { // loop through neighbours of u
+        CustomNode v = adj.get(u).get(i); // get neighbour
+
+        // If current node hasn't already been processed
+        if (!visited.contains(v.node)) {
+          edgeDistance = v.cost; // get distance from u to v
+          newDistance = distArr[u] + edgeDistance; // distance from current to neighbour plus neighbour cost
+
+          // If new distance is cheaper in cost
+          if (newDistance < distArr[v.node])
+            distArr[v.node] = newDistance;
+
+          // Add the current node to the queue
+          ll.add(new CustomNode(v.node, distArr[v.node]));
         }
       }
     }
@@ -101,62 +188,62 @@ public class DijkstraLinkedList {
   }
 
   // Adjacency map
-  static Map<Integer, List<Node>> getAdjList() {
-    Map<Integer, List<Node>> adjList = new HashMap<Integer, List<Node>>();
+  public static Map<Integer, List<CustomNode>> getAdjList() {
+    Map<Integer, List<CustomNode>> adjList = new HashMap<Integer, List<CustomNode>>();
 
-    List<Node> l1 = new ArrayList<Node>();
-    l1.add(new Node(2, getRandomNumber(1, 1)));
-    l1.add(new Node(3, getRandomNumber(1, 1)));
-    l1.add(new Node(4, getRandomNumber(1, 1)));
+    List<CustomNode> l1 = new ArrayList<CustomNode>();
+    l1.add(new CustomNode(2, getRandomNumber(1, 1)));
+    l1.add(new CustomNode(3, getRandomNumber(1, 1)));
+    l1.add(new CustomNode(4, getRandomNumber(1, 1)));
     adjList.put(1, l1);
 
-    List<Node> l2 = new ArrayList<Node>();
-    l2.add(new Node(5, getRandomNumber(1, 1)));
-    l2.add(new Node(6, getRandomNumber(1, 1)));
-    l2.add(new Node(7, getRandomNumber(1, 1)));
+    List<CustomNode> l2 = new ArrayList<CustomNode>();
+    l2.add(new CustomNode(5, getRandomNumber(1, 1)));
+    l2.add(new CustomNode(6, getRandomNumber(1, 1)));
+    l2.add(new CustomNode(7, getRandomNumber(1, 1)));
     adjList.put(2, l2);
 
-    List<Node> l3 = new ArrayList<Node>();
-    l3.add(new Node(5, getRandomNumber(1, 1)));
-    l3.add(new Node(6, getRandomNumber(1, 1)));
-    l3.add(new Node(7, getRandomNumber(1, 1)));
+    List<CustomNode> l3 = new ArrayList<CustomNode>();
+    l3.add(new CustomNode(5, getRandomNumber(1, 1)));
+    l3.add(new CustomNode(6, getRandomNumber(1, 1)));
+    l3.add(new CustomNode(7, getRandomNumber(1, 1)));
     adjList.put(3, l3);
 
-    List<Node> l4 = new ArrayList<Node>();
-    l4.add(new Node(5, getRandomNumber(1, 1)));
-    l4.add(new Node(6, getRandomNumber(1, 1)));
-    l4.add(new Node(7, getRandomNumber(1, 1)));
+    List<CustomNode> l4 = new ArrayList<CustomNode>();
+    l4.add(new CustomNode(5, getRandomNumber(1, 1)));
+    l4.add(new CustomNode(6, getRandomNumber(1, 1)));
+    l4.add(new CustomNode(7, getRandomNumber(1, 1)));
     adjList.put(4, l4);
 
-    List<Node> l5 = new ArrayList<Node>();
-    l5.add(new Node(8, getRandomNumber(1, 1)));
+    List<CustomNode> l5 = new ArrayList<CustomNode>();
+    l5.add(new CustomNode(8, getRandomNumber(1, 1)));
     adjList.put(5, l5);
 
-    List<Node> l6 = new ArrayList<Node>();
-    l6.add(new Node(8, getRandomNumber(1, 1)));
+    List<CustomNode> l6 = new ArrayList<CustomNode>();
+    l6.add(new CustomNode(8, getRandomNumber(1, 1)));
     adjList.put(6, l6);
 
-    List<Node> l7 = new ArrayList<Node>();
-    l7.add(new Node(8, getRandomNumber(1, 1)));
+    List<CustomNode> l7 = new ArrayList<CustomNode>();
+    l7.add(new CustomNode(8, getRandomNumber(1, 1)));
     adjList.put(7, l7);
 
-    List<Node> l8 = new ArrayList<Node>();
+    List<CustomNode> l8 = new ArrayList<CustomNode>();
     adjList.put(8, l8);
 
     SortedLinkedList linkedList = new SortedLinkedList();
-    linkedList.add(new Node(1, 1));
+    linkedList.add(new CustomNode(1, 1));
     System.out.println(linkedList.toString());
-    linkedList.add(new Node(2, 1));
+    linkedList.add(new CustomNode(2, 1));
     System.out.println(linkedList.toString());
-    linkedList.add(new Node(3, 1));
+    linkedList.add(new CustomNode(3, 1));
     System.out.println(linkedList.toString());
-    linkedList.add(new Node(4, 2));
+    linkedList.add(new CustomNode(4, 2));
     System.out.println(linkedList.toString());
-    linkedList.add(new Node(5, 2));
+    linkedList.add(new CustomNode(5, 2));
     System.out.println(linkedList.toString());
-    linkedList.add(new Node(6, 2));
+    linkedList.add(new CustomNode(6, 2));
     System.out.println(linkedList.toString());
-    linkedList.add(new Node(7, 3));
+    linkedList.add(new CustomNode(7, 3));
     System.out.println(linkedList.toString());
     linkedList.removeMin();
     linkedList.removeMin();
@@ -173,60 +260,16 @@ public class DijkstraLinkedList {
 }
 
 /**
- * Node class with public node, cost
- */
-class Node implements Comparator<Node> {
-
-  // Member variables of this class
-  public int node, cost;
-  private Node prev, next;
-
-  public Node() {
-  }
-
-  public Node(int node, int cost) {
-    this.node = node;
-    this.cost = cost;
-  }
-
-  @Override
-  public int compare(Node node1, Node node2) {
-    if (node1.cost < node2.cost)
-      return -1;
-    if (node1.cost > node2.cost)
-      return 1;
-    return 0;
-  }
-
-  public Node getNext() {
-    return next;
-  }
-
-  public Node getPrev() {
-    return prev;
-  }
-
-  public void setNext(Node node) {
-    this.next = node;
-  }
-
-  public void setPrev(Node node) {
-    this.prev = node;
-  }
-
-}
-
-/**
  * A sorted linkedlist of Nodes
  */
 class SortedLinkedList {
-  private Node header, trailer;
+  private CustomNode header, trailer;
   private int size = 0;
-  private HashMap<Integer, Node> map = new HashMap<Integer, Node>();
+  private HashMap<Integer, CustomNode> map = new HashMap<Integer, CustomNode>();
 
   public SortedLinkedList() {
-    header = new Node(Integer.MAX_VALUE - 1, 0);
-    trailer = new Node(Integer.MAX_VALUE, Integer.MAX_VALUE);
+    header = new CustomNode(Integer.MAX_VALUE - 1, 0);
+    trailer = new CustomNode(Integer.MAX_VALUE, Integer.MAX_VALUE);
     trailer.setPrev(header);
     header.setNext(trailer);
   }
@@ -243,15 +286,15 @@ class SortedLinkedList {
    * 
    * @param node
    */
-  public void add(Node node) {
+  public void add(CustomNode node) {
     if (map.containsKey(node.cost)) { // worst case o(n)
-      Node current = map.get(node.cost);
+      CustomNode current = map.get(node.cost);
       node.setPrev(current);
       node.setNext(current.getNext());
       current.getNext().setPrev(node);
       current.setNext(node);
     } else { // potentially o(n)
-      Node current = header.getNext();
+      CustomNode current = header.getNext();
       while (node.cost >= current.cost)
         current = current.getNext();
       current.getPrev().setNext(node);
@@ -272,16 +315,16 @@ class SortedLinkedList {
     return this.size;
   }
 
-  public Node min() {
+  public CustomNode min() {
     if (isEmpty())
       return null;
     return header.getNext();
   }
 
-  public Node removeMin() {
+  public CustomNode removeMin() {
     if (isEmpty())
       return null;
-    Node current = header.getNext();
+      CustomNode current = header.getNext();
     header.setNext(current.getNext());
     current.getNext().setPrev(header);
     current.setNext(null);
@@ -292,7 +335,7 @@ class SortedLinkedList {
 
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    Node current = header;
+    CustomNode current = header;
     while (current != trailer) {
       sb.append(current.node);
       sb.append(" ");
@@ -303,7 +346,7 @@ class SortedLinkedList {
 
   public String toString2() {
     StringBuilder sb = new StringBuilder();
-    Node current = trailer;
+    CustomNode current = trailer;
     while (current != header) {
       sb.append(current.node);
       sb.append(" ");

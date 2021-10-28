@@ -222,6 +222,8 @@ public class GraphAlgorithms {
             Vertex<V> u = entry.getValue();
             cloud.put(u, key);                             // this is actual distance to u
             pqTokens.remove(u);                            // u is no longer in pq
+            if (u == dest)
+                break;
             for (Edge<Integer> e : g.outgoingEdges(u)) {
                 Vertex<V> v = g.opposite(u, e);
                 if (cloud.get(v) == null) {
@@ -232,9 +234,6 @@ public class GraphAlgorithms {
                         pq.replaceKey(pqTokens.get(v), d.get(v));   // update the pq entry
                     }
                 }
-            }
-            if (u == dest){
-                break;
             }
         }
         return cloud;         // this only includes reachable vertices
