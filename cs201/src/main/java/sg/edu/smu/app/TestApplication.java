@@ -213,7 +213,7 @@ public class TestApplication {
 
             startTime = System.nanoTime();
             dji = new DijkstraLinkedList(numVertices);
-            dji.dijkstra_LL(adjMap, id1);
+            dji.adapter(adjMap, id1, false);
             System.out.println(id1 + " to " + id2 + " is " + dji.distArr[id2]);
             
             endTime = System.nanoTime();
