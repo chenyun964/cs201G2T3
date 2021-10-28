@@ -82,7 +82,7 @@ public class TestApplication {
         System.out.println("Load Date...");
         JSONParser parser = new JSONParser();
         JSONArray users = null;
-        try (Reader reader = new FileReader("1k.json")) {
+        try (Reader reader = new FileReader("100.json")) {
             users = (JSONArray) parser.parse(reader);
         } catch (Exception e) {
             e.printStackTrace();
@@ -115,8 +115,8 @@ public class TestApplication {
         // Test input
         // From: "zzrA6bRsAxj_qXui0SyBwQ"
         // To: "PZW77I6qXeM0RQjo1kGBUg"
-        Vertex<Integer> v1 = verts.get("aPdlWUb9VU6qHUsuw10lSA");
-        Vertex<Integer> v2 = verts.get("2coXhGmKUShIEgn0ZeI2Fw");
+        Vertex<Integer> v1 = verts.get("bPEBX_5aRZA7StQ-WNPVDw");
+        Vertex<Integer> v2 = verts.get("DZfhIL6tnEb7I42cHuuT6A");
         // Vertex<Integer> v1 = findVertex(g, new Random().nextInt(mapList.size()));
         // Vertex<Integer> v2 = findVertex(g, new Random().nextInt(mapList.size()));
 
@@ -139,10 +139,10 @@ public class TestApplication {
         long totalTime3 = endTime3 - startTime3;
         System.out.println();
         System.out.println("Time to Compute Path: " + totalTime3 / divider + "s");
-
+        
         GraphAjdacencyMatrix graph = new GraphAjdacencyMatrix(mapList.size());
         graph = generateAdjacencyMatrixFromData(graph, users, verts);
-        graph.printGraph();
+        // graph.printGraph();
     }
 
     public static TreeSet<String> getLabels(JSONArray users) {
