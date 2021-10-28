@@ -141,7 +141,7 @@ public class TestApplication {
         System.out.println("Time to Compute Path: " + totalTime3 / divider + "s");
         
         GraphAjdacencyMatrix graph = new GraphAjdacencyMatrix(mapList.size());
-        graph = generateAdjacencyMatrixFromData(graph, users, verts);
+        generateAdjacencyMatrixFromData(graph, users, verts);
         // graph.printGraph();
     }
 
@@ -197,7 +197,7 @@ public class TestApplication {
         return ajdList;
     }
 
-    public static GraphAjdacencyMatrix generateAdjacencyMatrixFromData(GraphAjdacencyMatrix g, JSONArray users,
+    public static void generateAdjacencyMatrixFromData(GraphAjdacencyMatrix g, JSONArray users,
             HashMap<String, Vertex<Integer>> userToInt) {
 
         for (Object u : users) {
@@ -209,6 +209,5 @@ public class TestApplication {
                 g.addEdge(id, userToInt.get(s).getElement());
             }
         }
-        return g;
     }
 }
