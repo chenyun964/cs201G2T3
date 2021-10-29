@@ -130,7 +130,7 @@ public class TestApplication {
         g = null;
         v1 = null;
         v2 = null;
-        mapList = null;
+        // mapList = null;
         verts = null;
 
         System.out.println("Generating adj map for Djikstra Algo");
@@ -268,15 +268,47 @@ public class TestApplication {
         startTime = System.nanoTime();
         runtime = Runtime.getRuntime();
         dji = new DijkstraLinkedList(numVertices);
-        dji.dijkstra_Dumb_Stack(adjMap, id1);
+        dji.dijkstra_Stack(adjMap, id1);
         System.out.println("Shortest path length is: " + dji.distArr[id2]);
+        endTime = System.nanoTime();
+        totalTime = endTime - startTime;
+        System.out.println();
+        System.out.println("Time to Compute Path: " + totalTime / divider + "s");
+        // Run the garbage collector
+        runtime.gc();
+        // Calculate the used memory
+        memory = runtime.totalMemory() - runtime.freeMemory();
+        System.out.println("Used memory is bytes: " + memory);
+        System.out.println("Used memory is megabytes: " + bytesToMegabytes(memory));
+        System.out.println("\n--------------------------------------------------\n");
+
+        /**
+        * Adjacency Map + Djikstra HashMap w Que
+        */
+        System.out.println("Adjacency Map + Djikstra (HashMap w Circular Array as Queue)");
+        startTime = System.nanoTime();
+        runtime = Runtime.getRuntime();
+        dji = new DijkstraLinkedList(numVertices);
+        dji.dijkstra_HashMap_Que(adjMap, id1);
+        System.out.println("Shortest path length is: " + dji.distArr[id2]);
+        endTime = System.nanoTime();
+        totalTime = endTime - startTime;
+        System.out.println();
+        System.out.println("Time to Compute Path: " + totalTime / divider + "s");
+        // Run the garbage collector
+        runtime.gc();
+        // Calculate the used memory
+        memory = runtime.totalMemory() - runtime.freeMemory();
+        System.out.println("Used memory is bytes: " + memory);
+        System.out.println("Used memory is megabytes: " + bytesToMegabytes(memory));
+        System.out.println("\n--------------------------------------------------\n");
 
         /**
          * Generate Adjacency Matrix
          */
         GraphAjdacencyMatrix graph = new GraphAjdacencyMatrix(mapList.size());
         generateAdjacencyMatrixFromData(graph, users, verts);
-
+        
         /**
          * Adjacency Matrix + BFS Queue
          */

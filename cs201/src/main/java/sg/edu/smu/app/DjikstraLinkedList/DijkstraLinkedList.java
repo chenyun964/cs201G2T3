@@ -6,6 +6,7 @@ import sg.edu.smu.app.datastructures.MinNode;
 import sg.edu.smu.app.datastructures.OrderedMinStack;
 import sg.edu.smu.app.datastructures.SortedLinkedList;
 import sg.edu.smu.app.datastructures.SortedLinkedListWithoutHashMap;
+import sg.edu.smu.app.datastructures.MinHashMap;
 
 public class DijkstraLinkedList {
   /**
@@ -153,7 +154,7 @@ public class DijkstraLinkedList {
     }
   }
   
-  public void dijkstra_Dumb_Stack(Map<Integer, List<CustomNode>> adj, int source) {
+  public void dijkstra_Stack(Map<Integer, List<CustomNode>> adj, int source) {
     OrderedMinStack ll = new OrderedMinStack();
 
     for (int i = 0; i < numVertices; i++)
@@ -187,5 +188,41 @@ public class DijkstraLinkedList {
       }
     }
   }
+
+  public void dijkstra_HashMap_Que(Map<Integer, List<CustomNode>> adj, int source) {
+    MinHashMap ll = new MinHashMap();
+
+    for (int i = 0; i < numVertices; i++)
+      distArr[i] = Integer.MAX_VALUE;
+    
+    ll.add(new CustomNode(source, 0));
+    distArr[source] = 0;
+
+    while (visited.size() != numVertices) {
+      if (ll.isEmpty())
+        return;
+      int u = ll.removeMin().node;
+      if (visited.contains(u))
+        continue;
+      visited.add(u);
+
+      int edgeDistance = -1;
+      int newDistance = -1;
+
+      for (int i = 0; i < adj.get(u).size(); i++) {
+        CustomNode v = adj.get(u).get(i);
+
+        if (!visited.contains(v.node)) {
+          edgeDistance = v.cost;
+          newDistance = distArr[u] + edgeDistance;
+          
+          if (newDistance < distArr[v.node])
+            distArr[v.node] = newDistance;
+          ll.add(new CustomNode(v.node, distArr[v.node]));
+        }
+      }
+    }
+  }
+
 
 }
