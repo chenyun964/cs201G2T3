@@ -6,7 +6,8 @@ public class CustomNode implements Comparator<CustomNode> {
   
   // Member variables of this class
   public int node, cost;
-  private CustomNode prev, next;
+  public CustomNode prev, next;
+  public CustomNode prevMin;
 
   public CustomNode() {
   }
@@ -16,6 +17,14 @@ public class CustomNode implements Comparator<CustomNode> {
     this.cost = cost;
   }
 
+  public CustomNode getPrevMin() {
+    return prevMin;
+  }
+
+  public void setPrevMin(CustomNode node) {
+    this.prevMin = node;
+  }
+  
   @Override
   public int compare(CustomNode node1, CustomNode node2) {
     if (node1.cost < node2.cost)

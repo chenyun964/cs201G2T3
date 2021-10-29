@@ -135,13 +135,14 @@ public class TestApplication {
 
         System.out.println("Generating adj map for Djikstra Algo");
         JSONObject data = null;
-
+        // data/sample3.json
+        // data/100.json
         try (Reader reader = new FileReader("data/sample3.json")) {
             data = (JSONObject) parser.parse(reader);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        
         labels = new TreeSet<>();
         for (Object key : data.keySet()) {
             labels.add((String) key);
@@ -184,37 +185,102 @@ public class TestApplication {
         uniqueList = null;
         int numVertices = adjMap.size();
 
+        System.out.println("In this experiment, we are fixing the input Data Structure (Adj Map) and Algo (Djikstra) \n"+
+        "and will be varying the data structure used for sorting");
         System.out.println("From id " + id1 + " to " + id2);
         System.out.println("\n--------------------------------------------------\n");
         
         /**
          * Adjacency Map + Djikstra PQ
          */
-        System.out.println("Adjacency Map + Djikstra PQ");
+        System.out.println("Adjacency Map + Djikstra Sorted PQ");
         startTime = System.nanoTime();
+        runtime = Runtime.getRuntime();
+
         DijkstraLinkedList dji = new DijkstraLinkedList(numVertices);
         dji.dijkstra_PQ(adjMap, id1);
         System.out.println("Shortest path length is: " +  dji.distArr[id2]);
         endTime = System.nanoTime();
         totalTime = endTime - startTime;
-        System.out.println("Time to perform search: " + totalTime / divider + "s");
+        System.out.println();
+        System.out.println("Time to Compute Path: " + totalTime / divider + "s");
+        // Run the garbage collector
+        runtime.gc();
+        // Calculate the used memory
+        memory = runtime.totalMemory() - runtime.freeMemory();
+        System.out.println("Used memory is bytes: " + memory);
+        System.out.println("Used memory is megabytes: " + bytesToMegabytes(memory));
         System.out.println("\n--------------------------------------------------\n");
 
-        /**
-         * Adjacency Map + Djikstra LL
-         */
-        System.out.println("Adjacency Map + Djikstra LL");
+        // /**
+        //  * Adjacency Map + Djikstra LL w Hash Map
+        //  */
+        System.out.println("Adjacency Map + Djikstra (Sorted LL w HashMap)");
         startTime = System.nanoTime();
+        runtime = Runtime.getRuntime();
         dji = new DijkstraLinkedList(numVertices);
-        dji.dijkstra_LL(adjMap, id1);
+        dji.dijkstra_LL_HM(adjMap, id1);
         System.out.println("Shortest path length is: " + dji.distArr[id2]);
         endTime = System.nanoTime();
         totalTime = endTime - startTime;
-        System.out.println("Time to perform search: " + totalTime / divider + "s");
+        System.out.println();
+        System.out.println("Time to Compute Path: " + totalTime / divider + "s");
+        // Run the garbage collector
+        runtime.gc();
+        // Calculate the used memory
+        memory = runtime.totalMemory() - runtime.freeMemory();
+        System.out.println("Used memory is bytes: " + memory);
+        System.out.println("Used memory is megabytes: " + bytesToMegabytes(memory));
+        System.out.println("\n--------------------------------------------------\n");
 
-        // GraphAjdacencyMatrix graph = new GraphAjdacencyMatrix(mapList.size());
-        // generateAdjacencyMatrixFromData(graph, users, verts);
-        // graph.printGraph();
+        // /**
+        //  * Adjacency Map + Djikstra LL w/o hashmap
+        //  */
+        System.out.println("Adjacency Map + Djikstra (Sorted LL w/o HashMap, like simple linear sorted array)");
+        // THIS ACTUALLY TAKES VERY LONG HENCE COMMENTED OUT
+
+        // startTime = System.nanoTime();
+        // runtime = Runtime.getRuntime();
+        // dji = new DijkstraLinkedList(numVertices);
+        // dji.dijkstra_LL(adjMap, id1);
+        // System.out.println("Shortest path length is: " + dji.distArr[id2]);
+        // endTime = System.nanoTime();
+        // totalTime = endTime - startTime;
+        // System.out.println();
+        // System.out.println("Time to Compute Path: " + totalTime / divider + "s");
+        // // Run the garbage collector
+        // runtime.gc();
+        // // Calculate the used memory
+        // memory = runtime.totalMemory() - runtime.freeMemory();
+        // System.out.println("Used memory is bytes: " + memory);
+        // System.out.println("Used memory is megabytes: " + bytesToMegabytes(memory));
+        System.out.println("This actually takes very long, hence pre run results are printed instead:");
+        System.out.println("Shortest path length is: 5");
+        System.out.println("Time to Compute Path: 4774.6261447s");
+        System.out.println("Used memory is bytes: 134289280");
+        System.out.println("Used memory is megabytes: 128");
+        System.out.println("\n--------------------------------------------------\n");
+
+        // /**
+        //  * Adjacency Map + Djikstra Dumb Stack
+        //  */
+        System.out.println("Adjacency Map + Djikstra (Stack)");
+        startTime = System.nanoTime();
+        runtime = Runtime.getRuntime();
+        dji = new DijkstraLinkedList(numVertices);
+        dji.dijkstra_Dumb_Stack(adjMap, id1);
+        System.out.println("Shortest path length is: " + dji.distArr[id2]);
+        endTime = System.nanoTime();
+        totalTime = endTime - startTime;
+        System.out.println();
+        System.out.println("Time to Compute Path: " + totalTime / divider + "s");
+        // Run the garbage collector
+        runtime.gc();
+        // Calculate the used memory
+        memory = runtime.totalMemory() - runtime.freeMemory();
+        System.out.println("Used memory is bytes: " + memory);
+        System.out.println("Used memory is megabytes: " + bytesToMegabytes(memory));
+        System.out.println("\n--------------------------------------------------\n");
 
         System.out.println("\n------------------ End Test ----------------------\n");
     }
