@@ -4,7 +4,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import sg.edu.smu.app.bfsqueue.BFSqueue;
+import sg.edu.smu.app.bfsqueue.BFSqueueMap;
+import sg.edu.smu.app.bfsqueue.BFSqueueMatrix;
 import sg.edu.smu.app.datastructures.AdjacencyMapGraph;
 import sg.edu.smu.app.datastructures.CustomNode;
 import sg.edu.smu.app.datastructures.Graph;
@@ -113,11 +114,10 @@ public class TestApplication {
         startTime = System.nanoTime();
         runtime = Runtime.getRuntime();
         g = generateAdjacencyMapFromData(users, g, verts);
-        BFSqueue<Integer> bfs = new BFSqueue<>();
-        bfs.printShortestDistance(g, v1, v2);
+        BFSqueueMap<Integer> bfs = new BFSqueueMap<>(g);
+        bfs.printShortestPath(v1, v2);
         endTime = System.nanoTime();
         totalTime = endTime - startTime;
-        System.out.println();
         System.out.println("Time to Compute Path: " + totalTime / divider + "s");
         // Run the garbage collector
         runtime.gc();
@@ -270,6 +270,22 @@ public class TestApplication {
         dji = new DijkstraLinkedList(numVertices);
         dji.dijkstra_Dumb_Stack(adjMap, id1);
         System.out.println("Shortest path length is: " + dji.distArr[id2]);
+
+        /**
+         * Generate Adjacency Matrix
+         */
+        GraphAjdacencyMatrix graph = new GraphAjdacencyMatrix(mapList.size());
+        generateAdjacencyMatrixFromData(graph, users, verts);
+
+        /**
+         * Adjacency Matrix + BFS Queue
+         */
+        System.out.println("Adjacency Map + BFS Queue");
+        startTime = System.nanoTime();
+        runtime = Runtime.getRuntime();
+        g = generateAdjacencyMapFromData(users, g, verts);
+        BFSqueueMatrix bfsMatrix = new BFSqueueMatrix(graph.matrix, graph.vertex);
+        bfsMatrix.printShortestPath(id1, id2);
         endTime = System.nanoTime();
         totalTime = endTime - startTime;
         System.out.println();

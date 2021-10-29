@@ -9,9 +9,15 @@ import sg.edu.smu.app.datastructures.Vertex;
 
 import java.util.HashMap;
 
-public class BFSqueue<V> {
-    public boolean BFS(Graph<V, Integer> graph, Vertex<V> src, Vertex<V> dest, 
-            Map<Vertex<V>, Vertex<V>> pred,  Map<Vertex<V>, Integer> dist) {
+public class BFSqueueMap<V> {
+    private Graph<V, Integer> graph;
+
+    public BFSqueueMap(Graph<V, Integer> graph) {
+        this.graph = graph;
+    }
+
+    private boolean bfs(Vertex<V> src, Vertex<V> dest, Map<Vertex<V>, Vertex<V>> pred, 
+            Map<Vertex<V>, Integer> dist) {
         // a queue to maintain queue of vertices whose
         // adjacency list is to be scanned as per normal
         // BFS algorithm using LinkedList of Integer type
@@ -60,25 +66,24 @@ public class BFSqueue<V> {
         return false;
     }
 
-    public void printShortestDistance(Graph<V, Integer> graph, Vertex<V> src, 
-            Vertex<V> dest) {
+    public void printShortestPath(Vertex<V> src, Vertex<V> dest) {
         // predecessor[i] array stores predecessor of
         // i and distance array stores distance of i
         // from s
         Map<Vertex<V>, Vertex<V>> pred = new HashMap<>();
         Map<Vertex<V>, Integer> dist = new HashMap<>();
 
-        if (!BFS(graph, src, dest, pred, dist)) {
-            System.out.println("Given source and destination" + "are not connected");
+        if (!bfs(src, dest, pred, dist)) {
+            System.out.println("Given source and destination are not connected");
             return;
         }
 
         // LinkedList to store path
-        LinkedList<V> path = new LinkedList<>();
+        LinkedList<String> path = new LinkedList<>();
         Vertex<V> crawl = dest;
-        path.add(crawl.getElement());
+        path.add(crawl.getElement().toString());
         while (pred.get(crawl) != null) {
-            path.add(pred.get(crawl).getElement());
+            path.addFirst(pred.get(crawl).getElement().toString());
             crawl = pred.get(crawl);
         }
 
@@ -87,8 +92,6 @@ public class BFSqueue<V> {
 
         // Print path
         System.out.println("Path is :");
-        for (int i = path.size() - 1; i >= 0; i--) {
-            System.out.print(path.get(i) + " ");
-        }
+        System.out.println(String.join(" ", path.toArray(String[]::new)));
     }
 }
