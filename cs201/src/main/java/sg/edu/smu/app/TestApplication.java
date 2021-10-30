@@ -194,13 +194,14 @@ public class TestApplication {
         /**
          * Adjacency Map + Djikstra PQ
          */
+        int times = 10;
         RunDJI djiExperiments = new RunDJI();
-        djiExperiments.runSortedPQ(numVertices, adjMap, id1, id2);
+        djiExperiments.runSortedPQ(numVertices, adjMap, id1, id2, times);
 
         // /**
         //  * Adjacency Map + Djikstra LL w Hash Map
         //  */
-        djiExperiments.runSortedLL(numVertices, adjMap, id1, id2);
+        djiExperiments.runSortedLL(numVertices, adjMap, id1, id2, times);
 
         // /**
         //  * Adjacency Map + Djikstra LL w/o hashmap
@@ -208,17 +209,21 @@ public class TestApplication {
         System.out.println("Adjacency Map + Djikstra (Sorted LL w/o HashMap, like simple linear sorted array)");
         // THIS ACTUALLY TAKES VERY LONG HENCE COMMENTED OUT
         djiExperiments.runLinearlySortedLinkedList(numVertices, adjMap, id1, id2);
-
-
+        
         // /**
         //  * Adjacency Map + Djikstra Dumb Stack
         //  */
-        djiExperiments.runMinStack(numVertices, adjMap, id1, id2);
+        djiExperiments.runMinStack(numVertices, adjMap, id1, id2, times);
 
         /**
         * Adjacency Map + Djikstra HashMap w Que
         */
-        djiExperiments.runHashMapCircular(numVertices, adjMap, id1, id2);
+        djiExperiments.runHashMapCircular(numVertices, adjMap, id1, id2, times);
+
+        /**
+        * Adjacency Map + Djikstra Sorted Array via bSearch
+        */
+        djiExperiments.runMinArray(numVertices, adjMap, id1, id2, 1);
         
         /**
          * Generate Adjacency Matrix

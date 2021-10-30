@@ -2,11 +2,11 @@ package sg.edu.smu.app.DjikstraLinkedList;
 
 import java.util.*;
 import sg.edu.smu.app.datastructures.CustomNode;
-import sg.edu.smu.app.datastructures.MinNode;
 import sg.edu.smu.app.datastructures.OrderedMinStack;
 import sg.edu.smu.app.datastructures.SortedLinkedList;
 import sg.edu.smu.app.datastructures.SortedLinkedListWithoutHashMap;
 import sg.edu.smu.app.datastructures.MinHashMap;
+import sg.edu.smu.app.datastructures.MinArray;
 
 public class DijkstraLinkedList {
   /**
@@ -17,7 +17,7 @@ public class DijkstraLinkedList {
   public int distArr[];
   public Set<Integer> visited;
   public PriorityQueue<CustomNode> pq;
-
+  
   public DijkstraLinkedList(int numVertices, Map<Integer, List<CustomNode>> adjMap) {
     this.numVertices = numVertices;
     this.distArr = new int[numVertices + 1];
@@ -224,5 +224,39 @@ public class DijkstraLinkedList {
     }
   }
 
+  public void dijkstra_Array_bSearch(Map<Integer, List<CustomNode>> adj, int source) {
+    MinArray ll = new MinArray();
+    
+    for (int i = 0; i < numVertices; i++)
+      distArr[i] = Integer.MAX_VALUE;
+    
+    ll.add(new CustomNode(source, 0));
+    distArr[source] = 0;
+
+    while (visited.size() != numVertices) {
+      if (ll.isEmpty())
+        return;
+      int u = ll.removeMin().node;
+      if (visited.contains(u))
+        continue;
+      visited.add(u);
+
+      int edgeDistance = -1;
+      int newDistance = -1;
+
+      for (int i = 0; i < adj.get(u).size(); i++) {
+        CustomNode v = adj.get(u).get(i);
+
+        if (!visited.contains(v.node)) {
+          edgeDistance = v.cost;
+          newDistance = distArr[u] + edgeDistance;
+          
+          if (newDistance < distArr[v.node])
+            distArr[v.node] = newDistance;
+          ll.add(new CustomNode(v.node, distArr[v.node]));
+        }
+      }
+    }
+  }
 
 }
