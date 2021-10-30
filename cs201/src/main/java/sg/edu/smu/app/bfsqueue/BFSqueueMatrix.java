@@ -1,6 +1,7 @@
 package sg.edu.smu.app.bfsqueue;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Arrays;
 
 public class BFSqueueMatrix {
@@ -68,6 +69,9 @@ public class BFSqueueMatrix {
 
         // Print path
         System.out.println("Path is :");
-        System.out.println(String.join(" ", path.toArray(String[]::new)));
+
+        while (!path.isEmpty())
+            System.out.print(path.remove() + " ");
+        System.out.println();
     }
 }
