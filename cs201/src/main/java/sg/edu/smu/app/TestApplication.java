@@ -189,6 +189,7 @@ public class TestApplication {
         System.out.println("In this experiment, we are fixing the input Data Structure (Adj Map) and Algo (Djikstra) \n"+
         "and will be varying the data structure used for sorting");
         System.out.println("From id " + id1 + " to " + id2);
+        System.out.println(numVertices);
         System.out.println("\n--------------------------------------------------\n");
         
         /**
@@ -209,7 +210,7 @@ public class TestApplication {
         System.out.println("Adjacency Map + Djikstra (Sorted LL w/o HashMap, like simple linear sorted array)");
         // THIS ACTUALLY TAKES VERY LONG HENCE COMMENTED OUT
         djiExperiments.runLinearlySortedLinkedList(numVertices, adjMap, id1, id2);
-        
+
         // /**
         //  * Adjacency Map + Djikstra Dumb Stack
         //  */
@@ -223,6 +224,7 @@ public class TestApplication {
         /**
         * Adjacency Map + Djikstra Sorted Array via bSearch
         */
+        System.out.println("Adjacency Map + Djikstra (Sorted Array using Binary Search)");
         djiExperiments.runMinArray(numVertices, adjMap, id1, id2, 1);
         
         /**
