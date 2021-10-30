@@ -34,7 +34,7 @@ public class GraphAjdacencyList {
     }
 
     public boolean BFS(int s, int d, int[] pred, int[] dist) {
-        boolean visited[] = new boolean[adj.size()];
+        boolean[] visited = new boolean[adj.size()];
         for (int i = 0; i < adj.size(); i++) {
             dist[i] = Integer.MAX_VALUE;
             pred[i] = Integer.MAX_VALUE;
