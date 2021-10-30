@@ -4,13 +4,15 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import sg.edu.smu.app.bfsqueue.BFSqueue;
+import sg.edu.smu.app.bfsqueue.BFSqueueMap;
+import sg.edu.smu.app.bfsqueue.BFSqueueMatrix;
 import sg.edu.smu.app.datastructures.AdjacencyMapGraph;
 import sg.edu.smu.app.datastructures.CustomNode;
 import sg.edu.smu.app.datastructures.Graph;
 import sg.edu.smu.app.datastructures.GraphAlgorithms;
 import sg.edu.smu.app.datastructures.Vertex;
 import sg.edu.smu.app.DjikstraLinkedList.DijkstraLinkedList;
+import sg.edu.smu.app.experiments.RunDJI;
 
 import java.io.FileReader;
 import java.io.Reader;
@@ -25,7 +27,7 @@ public class TestApplication {
         UserInterface app = new UserInterface();
         app.createUI();
 
-        System.out.println("Load Date...");
+        System.out.println("Load Data...");
         JSONParser parser = new JSONParser();
         JSONArray users = null;
         try (Reader reader = new FileReader("data/100.json")) {
@@ -56,8 +58,8 @@ public class TestApplication {
         // Vertex<Integer> v2 = findVertex(g, new Random().nextInt(mapList.size()));
         Vertex<Integer> v1 = verts.get("bPEBX_5aRZA7StQ-WNPVDw");
         Vertex<Integer> v2 = verts.get("DZfhIL6tnEb7I42cHuuT6A");
-        System.out.println("from: " + mapList.get(v1.getElement()));
-        System.out.println("To: " + mapList.get(v2.getElement()));
+        System.out.println("From: " + v1.getElement() + " " + mapList.get(v1.getElement()));
+        System.out.println("  To: " + v2.getElement() + " " + mapList.get(v2.getElement()));
         System.out.println("\n--------------------------------------------------\n");
 
         long startTime;
@@ -66,10 +68,11 @@ public class TestApplication {
         /**
          * Adjacency Map + Djikstra PQ
          */
+        // Generate Adjacency Map
+        g = generateAdjacencyMapFromData(users, g, verts);
         System.out.println("Adjacency Map + Djikstra PQ");
         Runtime runtime = Runtime.getRuntime();
         startTime = System.nanoTime();
-        g = generateAdjacencyMapFromData(users, g, verts);
         sg.edu.smu.app.datastructures.Map<Vertex<Integer>, Integer> a = GraphAlgorithms.shortestPathLengths(g, v1, v2);
         System.out.println("Shortest path length is: " + a.get(v2));
         endTime = System.nanoTime();
@@ -80,19 +83,38 @@ public class TestApplication {
         runtime.gc();
         // Calculate the used memory
         long memory = runtime.totalMemory() - runtime.freeMemory();
-        System.out.println("Used memory is bytes: " + memory);
-        System.out.println("Used memory is megabytes: " + bytesToMegabytes(memory));
+        System.out.println("Used memory in bytes: " + memory);
+        System.out.println("Used memory in megabytes: " + bytesToMegabytes(memory));
         System.out.println("\n--------------------------------------------------\n");
 
         /**
-         * Adjacency List + Djikstra PQ
+         * Adjacency Map + BFS Queue
          */
-        System.out.println("Adjacency List + Djikstra PQ");
+        System.out.println("Adjacency Map + BFS Queue");
+        startTime = System.nanoTime();
+        runtime = Runtime.getRuntime();
+        BFSqueueMap<Integer> bfs = new BFSqueueMap<>(g);
+        bfs.printShortestPath(v1, v2);
+        endTime = System.nanoTime();
+        totalTime = endTime - startTime;
+        System.out.println("Time to Compute Path: " + totalTime / divider + "s");
+        // Run the garbage collector
+        runtime.gc();
+        // Calculate the used memory
+        memory = runtime.totalMemory() - runtime.freeMemory();
+        System.out.println("Used memory in bytes: " + memory);
+        System.out.println("Used memory in megabytes: " + bytesToMegabytes(memory));
+        System.out.println("\n--------------------------------------------------\n");
+
+        /**
+         * Adjacency List + BFS Queue
+         */
+        // Generate Adjacency List
+        GraphAjdacencyList adjList = generateAdjacencyListFromData(users, verts);
+        System.out.println("Adjacency List + BFS Queue");
         runtime = Runtime.getRuntime();
         startTime = System.nanoTime();
-        // Generate Adjacency List 
-        GraphAjdacencyList adjList = generateAdjacencyListFromData(users, verts);
-        // Find shortest path 
+        // Find shortest path
         adjList.printShortestDistance(v1.getElement(), v2.getElement());
         endTime = System.nanoTime();
         totalTime = endTime - startTime;
@@ -102,40 +124,43 @@ public class TestApplication {
         runtime.gc();
         // Calculate the used memory
         memory = runtime.totalMemory() - runtime.freeMemory();
-        System.out.println("Used memory is bytes: " + memory);
-        System.out.println("Used memory is megabytes: " + bytesToMegabytes(memory));
+        System.out.println("Used memory in bytes: " + memory);
+        System.out.println("Used memory in megabytes: " + bytesToMegabytes(memory));
         System.out.println("\n--------------------------------------------------\n");
 
         /**
-         * Adjacency Map + BFS Queue
+         * Adjacency Matrix + BFS Queue
          */
-        System.out.println("Adjacency Map + BFS Queue");
+        // Generate Adjacency Matrix
+        GraphAjdacencyMatrix graph = new GraphAjdacencyMatrix(mapList.size());
+        generateAdjacencyMatrixFromData(graph, users, verts);
+        System.out.println("Adjacency Matrix + BFS Queue");
         startTime = System.nanoTime();
         runtime = Runtime.getRuntime();
-        g = generateAdjacencyMapFromData(users, g, verts);
-        BFSqueue<Integer> bfs = new BFSqueue<>();
-        bfs.printShortestDistance(g, v1, v2);
+        BFSqueueMatrix bfsMatrix = new BFSqueueMatrix(graph.matrix, graph.vertex);
+        bfsMatrix.printShortestPath(v1.getElement(), v2.getElement());
         endTime = System.nanoTime();
         totalTime = endTime - startTime;
-        System.out.println();
         System.out.println("Time to Compute Path: " + totalTime / divider + "s");
         // Run the garbage collector
         runtime.gc();
         // Calculate the used memory
         memory = runtime.totalMemory() - runtime.freeMemory();
-        System.out.println("Used memory is bytes: " + memory);
-        System.out.println("Used memory is megabytes: " + bytesToMegabytes(memory));
+        System.out.println("Used memory in bytes: " + memory);
+        System.out.println("Used memory in megabytes: " + bytesToMegabytes(memory));
         System.out.println("\n--------------------------------------------------\n");
+        System.out.println("\n------------------ End Test ----------------------\n");
 
         g = null;
         v1 = null;
         v2 = null;
-        mapList = null;
+        // mapList = null;
         verts = null;
 
         System.out.println("Generating adj map for Djikstra Algo");
         JSONObject data = null;
-
+        // data/sample3.json
+        // data/100.json
         try (Reader reader = new FileReader("data/sample3.json")) {
             data = (JSONObject) parser.parse(reader);
         } catch (Exception e) {
@@ -184,39 +209,46 @@ public class TestApplication {
         uniqueList = null;
         int numVertices = adjMap.size();
 
+        System.out.println("In this experiment, we are fixing the input Data Structure (Adj Map) and Algo (Djikstra) \n"
+                + "and will be varying the data structure used for sorting");
         System.out.println("From id " + id1 + " to " + id2);
+        System.out.println(numVertices);
         System.out.println("\n--------------------------------------------------\n");
-        
+
         /**
          * Adjacency Map + Djikstra PQ
          */
-        System.out.println("Adjacency Map + Djikstra PQ");
-        startTime = System.nanoTime();
-        DijkstraLinkedList dji = new DijkstraLinkedList(numVertices);
-        dji.dijkstra_PQ(adjMap, id1);
-        System.out.println("Shortest path length is: " +  dji.distArr[id2]);
-        endTime = System.nanoTime();
-        totalTime = endTime - startTime;
-        System.out.println("Time to perform search: " + totalTime / divider + "s");
-        System.out.println("\n--------------------------------------------------\n");
+        int times = 10;
+        RunDJI djiExperiments = new RunDJI();
+        djiExperiments.runSortedPQ(numVertices, adjMap, id1, id2, times);
+
+        // /**
+        // * Adjacency Map + Djikstra LL w Hash Map
+        // */
+        djiExperiments.runSortedLL(numVertices, adjMap, id1, id2, times);
+
+        // /**
+        // * Adjacency Map + Djikstra LL w/o hashmap
+        // */
+        System.out.println("Adjacency Map + Djikstra (Sorted LL w/o HashMap, like simple linear sorted array)");
+        // THIS ACTUALLY TAKES VERY LONG HENCE COMMENTED OUT
+        djiExperiments.runLinearlySortedLinkedList(numVertices, adjMap, id1, id2);
+
+        // /**
+        // * Adjacency Map + Djikstra Dumb Stack
+        // */
+        djiExperiments.runMinStack(numVertices, adjMap, id1, id2, times);
 
         /**
-         * Adjacency Map + Djikstra LL
+         * Adjacency Map + Djikstra HashMap w Que
          */
-        System.out.println("Adjacency Map + Djikstra LL");
-        startTime = System.nanoTime();
-        dji = new DijkstraLinkedList(numVertices);
-        dji.dijkstra_LL(adjMap, id1);
-        System.out.println("Shortest path length is: " + dji.distArr[id2]);
-        endTime = System.nanoTime();
-        totalTime = endTime - startTime;
-        System.out.println("Time to perform search: " + totalTime / divider + "s");
+        djiExperiments.runHashMapCircular(numVertices, adjMap, id1, id2, times);
 
-        // GraphAjdacencyMatrix graph = new GraphAjdacencyMatrix(mapList.size());
-        // generateAdjacencyMatrixFromData(graph, users, verts);
-        // graph.printGraph();
-
-        System.out.println("\n------------------ End Test ----------------------\n");
+        /**
+         * Adjacency Map + Djikstra Sorted Array via bSearch
+         */
+        System.out.println("Adjacency Map + Djikstra (Sorted Array using Binary Search)");
+        djiExperiments.runMinArray(numVertices, adjMap, id1, id2, 1);
     }
 
     public static TreeSet<String> getLabels(JSONArray users) {

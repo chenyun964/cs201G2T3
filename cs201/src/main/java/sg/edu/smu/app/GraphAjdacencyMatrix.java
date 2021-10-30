@@ -2,7 +2,7 @@ package sg.edu.smu.app;
 
 public class GraphAjdacencyMatrix {
     int vertex;
-    int matrix[][];
+    int[][] matrix;
 
     public GraphAjdacencyMatrix(int vertex) {
         this.vertex = vertex;
