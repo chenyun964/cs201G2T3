@@ -1,15 +1,12 @@
 package sg.edu.smu.app.dijkstra;
 
+import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 
 import sg.edu.smu.app.datastructures.Vertex;
-import sg.edu.smu.app.datastructures.AdaptablePriorityQueue;
 import sg.edu.smu.app.datastructures.Edge;
 import sg.edu.smu.app.datastructures.Graph;
-import sg.edu.smu.app.datastructures.HeapAdaptablePriorityQueue;
-import sg.edu.smu.app.datastructures.Map;
-import sg.edu.smu.app.datastructures.ProbeHashMap;
-import sg.edu.smu.app.datastructures.Entry;
 
 public class DijkstraMap {
     private Graph<Integer, Integer> graph;
@@ -20,40 +17,80 @@ public class DijkstraMap {
         this.numVertices = graph.numVertices();
     }
 
-    // Function implementing Dijkstra's Algorithm
-    public boolean dijkstra(Vertex<Integer> src, Vertex<Integer> dest, int[] dist, int[] pred) {
-        // map reachable v to its d value
-        boolean[] visited = new boolean[numVertices];
-        // pq will have vertices as elements, with d.get(v) as key
-        AdaptablePriorityQueue<Integer, Vertex<Integer>> pq = new HeapAdaptablePriorityQueue<>();
-        // maps from vertex to its pq locator
-        Map<Vertex<Integer>, Entry<Integer, Vertex<Integer>>> pqTokens = new ProbeHashMap<>();
+    class CustomNode implements Comparator<CustomNode> {
+        // Member variables of this class
+        public Vertex<Integer> node;
+        public int cost;
+        public CustomNode prev, next;
+        public CustomNode prevMin;
 
-        // for each vertex v of the graph, add an entry to the priority queue, with
-        // the source having distance 0 and all others having infinite distance
-        for (Vertex<Integer> v : graph.vertices()) {
-            pred[v.getElement()] = -1;
-            if (v == src)
-                dist[v.getElement()] = 0;
-            else
-                dist[v.getElement()] = Integer.MAX_VALUE;
-            pqTokens.put(v, pq.insert(dist[v.getElement()], v));
+        public CustomNode() {
         }
 
+        public CustomNode(Vertex<Integer> node, int cost) {
+            this.node = node;
+            this.cost = cost;
+        }
+
+        public CustomNode getPrevMin() {
+            return prevMin;
+        }
+
+        public void setPrevMin(CustomNode node) {
+            this.prevMin = node;
+        }
+
+        @Override
+        public int compare(CustomNode node1, CustomNode node2) {
+            if (node1.cost < node2.cost)
+                return -1;
+            if (node1.cost > node2.cost)
+                return 1;
+            return 0;
+        }
+
+        public CustomNode getNext() {
+            return next;
+        }
+
+        public CustomNode getPrev() {
+            return prev;
+        }
+
+        public void setNext(CustomNode node) {
+            this.next = node;
+        }
+
+        public void setPrev(CustomNode node) {
+            this.prev = node;
+        }
+    }
+
+    // Function implementing Dijkstra's Algorithm
+    public boolean dijkstra(Vertex<Integer> src, Vertex<Integer> dest, int[] dist, int[] pred) {
+        boolean[] visited = new boolean[numVertices];
+        for (int i = 0; i < numVertices; i++) {
+            dist[i] = Integer.MAX_VALUE;
+            pred[i] = -1;
+        }
+        dist[src.getElement()] = 0;
+
+        PriorityQueue<CustomNode> pq = new PriorityQueue<>(numVertices, new CustomNode());
+        // add src vertex to the queue
+        pq.add(new CustomNode(src, 0));
+
         while (!pq.isEmpty()) {
-            Entry<Integer, Vertex<Integer>> entry = pq.removeMin();
-            Vertex<Integer> u = entry.getValue();
-            pqTokens.remove(u);
+            Vertex<Integer> u = pq.remove().node;
             if (u == dest)
                 return true;
             for (Edge<Integer> e : graph.outgoingEdges(u)) {
                 Vertex<Integer> v = graph.opposite(u, e);
-                int id= v.getElement();
+                int id = v.getElement();
                 if (!visited[id] && dist[u.getElement()] + 1 < dist[id]) {
                     dist[id] = dist[u.getElement()] + 1;
                     pred[id] = u.getElement();
                     visited[id] = true;
-                    pq.replaceKey(pqTokens.get(v), dist[id]);
+                    pq.add(new CustomNode(v, dist[id]));
                 }
             }
         }
