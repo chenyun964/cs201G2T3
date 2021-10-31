@@ -18,8 +18,8 @@ public class BFSqueueMatrix {
         LinkedList<Integer> queue = new LinkedList<>();
         queue.add(src);
 
-        int[] visited = new int[v];
-        visited[src] = 1;
+        boolean[] visited = new boolean[v];
+        visited[src] = true;
 
         Arrays.fill(pred, -1);
         Arrays.fill(dist, Integer.MAX_VALUE);
@@ -31,16 +31,15 @@ public class BFSqueueMatrix {
             int current = queue.remove();
             // Loop through neighbors nodes to find the 'dest' node
             for (int i = 0; i < v; i++) {
-                if (graph[current][i] == 1 && visited[i] == 0) {
-                    visited[i] = 1;
+                if (!visited[i] && graph[current][i] == 1) {
+                    visited[i] = true;
                     dist[i] = dist[current] + 1;
                     queue.add(i);
                     // update its preceding node
                     pred[i] = current;
                     // end BFS if the dest node is found
-                    if (i == dest) {
+                    if (i == dest)
                         return true;
-                    }
                 }
             }
         }

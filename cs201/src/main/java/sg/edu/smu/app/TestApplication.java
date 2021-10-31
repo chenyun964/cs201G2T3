@@ -13,6 +13,7 @@ import sg.edu.smu.app.datastructures.Graph;
 import sg.edu.smu.app.datastructures.GraphAlgorithms;
 import sg.edu.smu.app.datastructures.Vertex;
 import sg.edu.smu.app.dijkstra.DijkstraList;
+import sg.edu.smu.app.dijkstra.DijkstraMap;
 import sg.edu.smu.app.DjikstraLinkedList.DijkstraLinkedList;
 import sg.edu.smu.app.experiments.RunDJI;
 
@@ -75,8 +76,8 @@ public class TestApplication {
         System.out.println("Adjacency Map + Djikstra PQ");
         Runtime runtime = Runtime.getRuntime();
         startTime = System.nanoTime();
-        sg.edu.smu.app.datastructures.Map<Vertex<Integer>, Integer> a = GraphAlgorithms.shortestPathLengths(g, v1, v2);
-        System.out.println("Shortest path length is: " + a.get(v2));
+        DijkstraMap dijMap = new DijkstraMap(g);
+        dijMap.printShortestDistance(v1, v2);
         endTime = System.nanoTime();
         totalTime = endTime - startTime;
         System.out.println("Time to Compute Path: " + totalTime / divider + "s");
@@ -95,7 +96,7 @@ public class TestApplication {
         System.out.println("Adjacency Map + BFS Queue");
         startTime = System.nanoTime();
         runtime = Runtime.getRuntime();
-        BFSqueueMap<Integer> bfs = new BFSqueueMap<>(g);
+        BFSqueueMap bfs = new BFSqueueMap(g);
         bfs.printShortestPath(v1, v2);
         endTime = System.nanoTime();
         totalTime = endTime - startTime;
@@ -117,11 +118,10 @@ public class TestApplication {
         runtime = Runtime.getRuntime();
         startTime = System.nanoTime();
         // Find shortest path
-        DijkstraList dijList = new DijkstraList(adjList, adjList.size());
+        DijkstraList dijList = new DijkstraList(adjList);
         dijList.printShortestDistance(v1.getElement(), v2.getElement());
         endTime = System.nanoTime();
         totalTime = endTime - startTime;
-        System.out.println();
         System.out.println("Time to Compute Path: " + totalTime / divider + "s");
         // Run the garbage collector
         runtime.gc();
@@ -143,7 +143,28 @@ public class TestApplication {
         bfsList.printShortestDistance(v1.getElement(), v2.getElement());
         endTime = System.nanoTime();
         totalTime = endTime - startTime;
-        System.out.println();
+        System.out.println("Time to Compute Path: " + totalTime / divider + "s");
+        // Run the garbage collector
+        runtime.gc();
+        // Calculate the used memory
+        memory = runtime.totalMemory() - runtime.freeMemory();
+        System.out.println("Used memory in bytes: " + memory);
+        System.out.println("Used memory in megabytes: " + bytesToMegabytes(memory));
+        System.out.println("\n--------------------------------------------------\n");
+
+        /**
+         * Adjacency Matrix + Dijkstra PQ
+         */
+        // Generate Adjacency Matrix
+        GraphAjdacencyMatrix graph = new GraphAjdacencyMatrix(mapList.size());
+        generateAdjacencyMatrixFromData(graph, users, verts);
+        System.out.println("Adjacency Matrix + Dijkstra PQ");
+        startTime = System.nanoTime();
+        runtime = Runtime.getRuntime();
+        BFSqueueMatrix dijMatrix = new BFSqueueMatrix(graph.matrix, graph.vertex);
+        dijMatrix.printShortestPath(v1.getElement(), v2.getElement());
+        endTime = System.nanoTime();
+        totalTime = endTime - startTime;
         System.out.println("Time to Compute Path: " + totalTime / divider + "s");
         // Run the garbage collector
         runtime.gc();
@@ -156,8 +177,6 @@ public class TestApplication {
         /**
          * Adjacency Matrix + BFS Queue
          */
-        // Generate Adjacency Matrix
-        GraphAjdacencyMatrix graph = new GraphAjdacencyMatrix(mapList.size());
         generateAdjacencyMatrixFromData(graph, users, verts);
         System.out.println("Adjacency Matrix + BFS Queue");
         startTime = System.nanoTime();

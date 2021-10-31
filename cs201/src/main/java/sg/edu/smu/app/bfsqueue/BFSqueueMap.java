@@ -7,58 +7,41 @@ import sg.edu.smu.app.datastructures.Edge;
 import sg.edu.smu.app.datastructures.Graph;
 import sg.edu.smu.app.datastructures.Vertex;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
-public class BFSqueueMap<V> {
-    private Graph<V, Integer> graph;
+public class BFSqueueMap {
+    private Graph<Integer, Integer> graph;
+    private int numVertices;
 
-    public BFSqueueMap(Graph<V, Integer> graph) {
+    public BFSqueueMap(Graph<Integer, Integer> graph) {
         this.graph = graph;
+        this.numVertices = graph.numVertices();
     }
 
-    private boolean bfs(Vertex<V> src, Vertex<V> dest, Map<Vertex<V>, Vertex<V>> pred, 
-            Map<Vertex<V>, Integer> dist) {
-        // a queue to maintain queue of vertices whose
-        // adjacency list is to be scanned as per normal
-        // BFS algorithm using LinkedList of Integer type
-        LinkedList<Vertex<V>> queue = new LinkedList<>();
-
-        // boolean array visited[] which stores the
-        // information whether ith vertex is reached
-        // at least once in the Breadth first search
-        Map<Vertex<V>, Boolean> visited = new HashMap<>();
-
-        // initially all vertices are unvisited
-        // so v[i] for all i is false
-        // and as no path is yet constructed
-        // dist[i] for all i set to infinity
-        for (Vertex<V> v : graph.vertices()) {
-            visited.put(v, false);
-            dist.put(v, Integer.MAX_VALUE);
-            pred.put(v, null);
-        }
-
-        // now source is first to be visited and
-        // distance from source to itself should be 0
-        visited.put(src, true);
-        dist.put(src, 0);
+    private boolean bfs(Vertex<Integer> src, Vertex<Integer> dest, int[] pred, int[] dist) {
+        LinkedList<Vertex<Integer>> queue = new LinkedList<>();
         queue.add(src);
 
-        // bfs Algorithm
+        boolean[] visited = new boolean[numVertices];
+        visited[src.getElement()] = true;
+
+        Arrays.fill(pred, -1);
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        dist[src.getElement()] = 0;
+
         while (!queue.isEmpty()) {
-            Vertex<V> u = queue.remove();
+            Vertex<Integer> u = queue.remove();
 
             for (Edge<Integer> e : graph.outgoingEdges(u)) {
-                Vertex<V> vert = graph.opposite(u, e);
-                if (Boolean.FALSE.equals(visited.get(vert))) {
-                    visited.put(vert, true);
-                    dist.put(vert, dist.get(u) + 1);
-                    pred.put(vert, u);
-                    queue.add(vert);
-
-                    // stopping condition (when we find
-                    // our destination)
-                    if (vert == dest)
+                Vertex<Integer> v = graph.opposite(u, e);
+                Integer id = v.getElement();
+                if (!visited[id]) {
+                    visited[id] = true;
+                    dist[id] = dist[u.getElement()] + 1;
+                    pred[id] = u.getElement();
+                    queue.add(v);
+                    if (v == dest)
                         return true;
                 }
             }
@@ -66,12 +49,12 @@ public class BFSqueueMap<V> {
         return false;
     }
 
-    public void printShortestPath(Vertex<V> src, Vertex<V> dest) {
+    public void printShortestPath(Vertex<Integer> src, Vertex<Integer> dest) {
         // predecessor[i] array stores predecessor of
         // i and distance array stores distance of i
         // from s
-        Map<Vertex<V>, Vertex<V>> pred = new HashMap<>();
-        Map<Vertex<V>, Integer> dist = new HashMap<>();
+        int[] pred = new int[numVertices];
+        int[] dist = new int[numVertices];
 
         if (!bfs(src, dest, pred, dist)) {
             System.out.println("Given source and destination are not connected");
@@ -79,19 +62,21 @@ public class BFSqueueMap<V> {
         }
 
         // LinkedList to store path
-        LinkedList<String> path = new LinkedList<>();
-        Vertex<V> crawl = dest;
-        path.add(crawl.getElement().toString());
-        while (pred.get(crawl) != null) {
-            path.addFirst(pred.get(crawl).getElement().toString());
-            crawl = pred.get(crawl);
+        LinkedList<Integer> path = new LinkedList<>();
+        int crawl = dest.getElement();
+        path.add(crawl);
+        while (pred[crawl] != -1) {
+            path.addFirst(pred[crawl]);
+            crawl = pred[crawl];
         }
 
         // Print distance
-        System.out.println("Shortest path length is: " + dist.get(dest));
+        System.out.println("Shortest path length is: " + dist[dest.getElement()]);
 
         // Print path
         System.out.println("Path is :");
-        System.out.println(String.join(" ", path.toArray(String[]::new)));
+        for (int i = 0; i < path.size(); i++)
+            System.out.print(path.get(i) + " ");
+        System.out.println();
     }
 }

@@ -52,7 +52,7 @@ public class BFSqueueList {
         LinkedList<Integer> path = new LinkedList<>();
         Integer c = dest;
         path.addFirst(c);
-        while (c != -1) {
+        while (pred[c] != -1) {
             path.addFirst(pred[c]);
             c = pred[c];
         }

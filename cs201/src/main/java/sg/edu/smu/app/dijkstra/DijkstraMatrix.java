@@ -2,17 +2,16 @@ package sg.edu.smu.app.dijkstra;
 
 import java.util.PriorityQueue;
 import java.util.LinkedList;
-import java.util.List;
 
 import sg.edu.smu.app.datastructures.CustomNode;
 
-public class DijkstraList {
-    List<List<Integer>> graph;
+public class DijkstraMatrix {
+    int[][] graph;
     int numVertices;
 
-    public DijkstraList(List<List<Integer>> graph) {
+    public DijkstraMatrix(int[][] graph) {
         this.graph = graph;
-        this.numVertices = graph.size();
+        this.numVertices = graph.length;
     }
 
     // Function implementing Dijkstra's Algorithm
@@ -33,12 +32,12 @@ public class DijkstraList {
             Integer current = pq.remove().node;
             if (current == dest)
                 return true;
-            for (Integer v : graph.get(current)) {
-                if (!visited[v] && dist[current] + 1 < dist[v]) {
-                    dist[v] = dist[current] + 1;
-                    pred[v] = current;
-                    visited[v] = true;
-                    pq.add(new CustomNode(v, dist[v]));
+            for (int i = 0; i < numVertices; i++) {
+                if (!visited[i] && graph[current][i] == 1) {
+                    dist[i] = dist[current] + 1;
+                    pred[i] = current;
+                    visited[i] = true;
+                    pq.add(new CustomNode(i, dist[i]));
                 }
             }
         }
@@ -53,7 +52,7 @@ public class DijkstraList {
             return;
         }
         LinkedList<Integer> path = new LinkedList<>();
-        int c = dest;
+        Integer c = dest;
         path.addFirst(c);
         while (pred[c] != -1) {
             path.addFirst(pred[c]);
@@ -61,8 +60,9 @@ public class DijkstraList {
         }
         System.out.println("Shortest path length is: " + dist[dest]);
         System.out.println("Path is :");
-        for (int i = 0; i < path.size(); i++)
+        for (int i = 0; i < path.size(); i++) {
             System.out.print(path.get(i) + " ");
+        }
         System.out.println();
     }
 }
