@@ -59,8 +59,17 @@ public class TestApplication {
         // Test input
         // Vertex<Integer> v1 = findVertex(g, new Random().nextInt(mapList.size()));
         // Vertex<Integer> v2 = findVertex(g, new Random().nextInt(mapList.size()));
-        Vertex<Integer> v1 = verts.get("bPEBX_5aRZA7StQ-WNPVDw");
-        Vertex<Integer> v2 = verts.get("DZfhIL6tnEb7I42cHuuT6A");
+        //        HashMap<Integer, String> mapList = new HashMap<>();
+
+        List<Integer> keyLists = new ArrayList<>(mapList.keySet());
+        Integer s1 = keyLists.get(new Random().nextInt(keyLists.size()));
+        Integer s2 = keyLists.get(new Random().nextInt(keyLists.size()));
+        Vertex<Integer> v1 = verts.get(mapList.get(s1));
+        Vertex<Integer> v2 = verts.get(mapList.get(s2));
+//        Vertex<Integer> v1 = verts.get("WT6yryyLUiDLLcvNfwOH3A");
+//        Vertex<Integer> v2 = verts.get("Rjemuu7YgvuAsk3M39a7bw");
+        //WT6yryyLUiDLLcvNfwOH3A
+        //Rjemuu7YgvuAsk3M39a7bw
         System.out.println("From: " + v1.getElement() + " " + mapList.get(v1.getElement()));
         System.out.println("  To: " + v2.getElement() + " " + mapList.get(v2.getElement()));
         System.out.println("\n--------------------------------------------------\n");
@@ -85,7 +94,7 @@ public class TestApplication {
         // Run the garbage collector
         runtime.gc();
         // Calculate the used memory
-        long memory = runtime.totalMemory() - runtime.freeMemory();
+       long memory = runtime.totalMemory() - runtime.freeMemory();
         System.out.println("Used memory in bytes: " + memory);
         System.out.println("Used memory in megabytes: " + bytesToMegabytes(memory));
         System.out.println("\n--------------------------------------------------\n");
@@ -311,7 +320,7 @@ public class TestApplication {
     }
 
     public static Graph<Integer, Integer> generateAdjacencyMapFromData(JSONArray users, Graph<Integer, Integer> g,
-            HashMap<String, Vertex<Integer>> verts) {
+                                                                       HashMap<String, Vertex<Integer>> verts) {
 
         for (Object u : users) {
             JSONObject user = (JSONObject) u;
@@ -328,7 +337,7 @@ public class TestApplication {
     }
 
     public static GraphAjdacencyList generateAdjacencyListFromData(JSONArray users,
-            HashMap<String, Vertex<Integer>> userToInt) {
+                                                                   HashMap<String, Vertex<Integer>> userToInt) {
 
         GraphAjdacencyList ajdList = new GraphAjdacencyList(userToInt.size());
 
@@ -346,7 +355,7 @@ public class TestApplication {
     }
 
     public static void generateAdjacencyMatrixFromData(GraphAjdacencyMatrix g, JSONArray users,
-            HashMap<String, Vertex<Integer>> userToInt) {
+                                                       HashMap<String, Vertex<Integer>> userToInt) {
 
         for (Object u : users) {
             JSONObject user = (JSONObject) u;
