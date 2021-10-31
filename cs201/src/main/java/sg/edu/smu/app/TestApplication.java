@@ -4,6 +4,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import sg.edu.smu.app.bfsqueue.BFSqueueList;
 import sg.edu.smu.app.bfsqueue.BFSqueueMap;
 import sg.edu.smu.app.bfsqueue.BFSqueueMatrix;
 import sg.edu.smu.app.datastructures.AdjacencyMapGraph;
@@ -11,6 +12,7 @@ import sg.edu.smu.app.datastructures.CustomNode;
 import sg.edu.smu.app.datastructures.Graph;
 import sg.edu.smu.app.datastructures.GraphAlgorithms;
 import sg.edu.smu.app.datastructures.Vertex;
+import sg.edu.smu.app.dijkstra.DijkstraList;
 import sg.edu.smu.app.DjikstraLinkedList.DijkstraLinkedList;
 import sg.edu.smu.app.experiments.RunDJI;
 
@@ -107,15 +109,38 @@ public class TestApplication {
         System.out.println("\n--------------------------------------------------\n");
 
         /**
+         * Adjacency List + Dijkstra PQ
+         */
+        // Generate Adjacency List
+        List<List<Integer>> adjList = generateAdjacencyListFromData(users, verts).getGraph();
+        System.out.println("Adjacency List + Dijkstra PQ");
+        runtime = Runtime.getRuntime();
+        startTime = System.nanoTime();
+        // Find shortest path
+        DijkstraList dijList = new DijkstraList(adjList, adjList.size());
+        dijList.printShortestDistance(v1.getElement(), v2.getElement());
+        endTime = System.nanoTime();
+        totalTime = endTime - startTime;
+        System.out.println();
+        System.out.println("Time to Compute Path: " + totalTime / divider + "s");
+        // Run the garbage collector
+        runtime.gc();
+        // Calculate the used memory
+        memory = runtime.totalMemory() - runtime.freeMemory();
+        System.out.println("Used memory in bytes: " + memory);
+        System.out.println("Used memory in megabytes: " + bytesToMegabytes(memory));
+        System.out.println("\n--------------------------------------------------\n");
+
+        /**
          * Adjacency List + BFS Queue
          */
         // Generate Adjacency List
-        GraphAjdacencyList adjList = generateAdjacencyListFromData(users, verts);
         System.out.println("Adjacency List + BFS Queue");
         runtime = Runtime.getRuntime();
         startTime = System.nanoTime();
         // Find shortest path
-        adjList.printShortestDistance(v1.getElement(), v2.getElement());
+        BFSqueueList bfsList = new BFSqueueList(adjList);
+        bfsList.printShortestDistance(v1.getElement(), v2.getElement());
         endTime = System.nanoTime();
         totalTime = endTime - startTime;
         System.out.println();

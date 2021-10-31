@@ -3,14 +3,15 @@ package sg.edu.smu.app;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 public class GraphAjdacencyList {
-    ArrayList<ArrayList<Integer>> adj;
+    List<List<Integer>> adj;
 
     public GraphAjdacencyList(int n) {
-        adj = new ArrayList<ArrayList<Integer>>(n);
+        adj = new ArrayList<>(n);
         for (int i = 0; i < n; i++)
-            adj.add(new ArrayList<Integer>());
+            adj.add(new ArrayList<>());
     }
 
     // A utility function to add an edge in an
@@ -88,7 +89,7 @@ public class GraphAjdacencyList {
 
     }
 
-    public ArrayList<ArrayList<Integer>> getGraph() {
+    public List<List<Integer>> getGraph() {
         return adj;
     }
 
