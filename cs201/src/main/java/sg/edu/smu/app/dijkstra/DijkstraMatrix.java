@@ -65,4 +65,21 @@ public class DijkstraMatrix {
         }
         System.out.println();
     }
+
+    public void calShortestDistance(int src, int dest) {
+        int[] pred = new int[numVertices];
+        int[] dist = new int[numVertices];
+        if (!dijkstra(src, dest, dist, pred)) {
+            System.out.println("Given source and destination" + "are not connected");
+            return;
+        }
+        LinkedList<Integer> path = new LinkedList<>();
+        Integer c = dest;
+        path.addFirst(c);
+        while (pred[c] != -1) {
+            path.addFirst(pred[c]);
+            c = pred[c];
+        }
+        System.out.println("Shortest path length is: " + dist[dest]);
+    }
 }

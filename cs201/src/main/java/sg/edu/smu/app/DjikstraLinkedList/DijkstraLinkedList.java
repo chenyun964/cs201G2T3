@@ -20,7 +20,7 @@ public class DijkstraLinkedList {
   public int distArr[];
   public Set<Integer> visited;
   public PriorityQueue<CustomNode> pq;
-  
+
   public DijkstraLinkedList(int numVertices, Map<Integer, List<CustomNode>> adjMap) {
     this.numVertices = numVertices;
     this.distArr = new int[numVertices + 1];
@@ -38,8 +38,9 @@ public class DijkstraLinkedList {
 
   public static void main(String[] args) {
   }
-  
-  // Dijkstra source: https://www.geeksforgeeks.org/dijkstras-shortest-path-algorithm-greedy-algo-7/
+
+  // Dijkstra source:
+  // https://www.geeksforgeeks.org/dijkstras-shortest-path-algorithm-greedy-algo-7/
   // This is the Base Case, Dijkstra Algo with PQ implementation
 
   public void dijkstra_PQ(Map<Integer, List<CustomNode>> adj, int source) {
@@ -110,12 +111,12 @@ public class DijkstraLinkedList {
       int edgeDistance = -1;
       int newDistance = -1;
 
-      for (int i = 0; i < adj.get(u).size(); i++) { 
+      for (int i = 0; i < adj.get(u).size(); i++) {
         CustomNode v = adj.get(u).get(i);
 
         if (!visited.contains(v.node)) {
           edgeDistance = v.cost;
-          newDistance = distArr[u] + edgeDistance; 
+          newDistance = distArr[u] + edgeDistance;
 
           if (newDistance < distArr[v.node])
             distArr[v.node] = newDistance;
@@ -161,14 +162,14 @@ public class DijkstraLinkedList {
       }
     }
   }
-  
+
   // This is the Dijkstra Algo with Stack implementation
   public void dijkstra_Stack(Map<Integer, List<CustomNode>> adj, int source) {
     OrderedMinStack ll = new OrderedMinStack();
 
     for (int i = 0; i < numVertices; i++)
       distArr[i] = Integer.MAX_VALUE;
-    
+
     ll.insert(new CustomNode(source, 0));
     distArr[source] = 0;
 
@@ -204,7 +205,7 @@ public class DijkstraLinkedList {
 
     for (int i = 0; i < numVertices; i++)
       distArr[i] = Integer.MAX_VALUE;
-    
+
     ll.add(new CustomNode(source, 0));
     distArr[source] = 0;
 
@@ -225,7 +226,7 @@ public class DijkstraLinkedList {
         if (!visited.contains(v.node)) {
           edgeDistance = v.cost;
           newDistance = distArr[u] + edgeDistance;
-          
+
           if (newDistance < distArr[v.node])
             distArr[v.node] = newDistance;
           ll.add(new CustomNode(v.node, distArr[v.node]));
@@ -234,13 +235,14 @@ public class DijkstraLinkedList {
     }
   }
 
-  // This is the Dijkstra Algo with HashMap and Array sorted via Binary search implementation
+  // This is the Dijkstra Algo with HashMap and Array sorted via Binary search
+  // implementation
   public void dijkstra_Array_bSearch(Map<Integer, List<CustomNode>> adj, int source) {
     MinArray ll = new MinArray();
-    
+
     for (int i = 0; i < numVertices; i++)
       distArr[i] = Integer.MAX_VALUE;
-    
+
     ll.add(new CustomNode(source, 0));
     distArr[source] = 0;
 
@@ -261,7 +263,7 @@ public class DijkstraLinkedList {
         if (!visited.contains(v.node)) {
           edgeDistance = v.cost;
           newDistance = distArr[u] + edgeDistance;
-          
+
           if (newDistance < distArr[v.node])
             distArr[v.node] = newDistance;
           ll.add(new CustomNode(v.node, distArr[v.node]));

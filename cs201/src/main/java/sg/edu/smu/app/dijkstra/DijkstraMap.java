@@ -118,4 +118,21 @@ public class DijkstraMap {
             System.out.print(path.get(i) + " ");
         System.out.println();
     }
+
+    public void calShortestDistance(Vertex<Integer> src, Vertex<Integer> dest) {
+        int[] pred = new int[numVertices];
+        int[] dist = new int[numVertices];
+        if (!dijkstra(src, dest, dist, pred)) {
+            System.out.println("Given source and destination" + "are not connected");
+            return;
+        }
+        LinkedList<Integer> path = new LinkedList<>();
+        int c = dest.getElement();
+        path.addFirst(c);
+        while (pred[c] != -1) {
+            path.addFirst(pred[c]);
+            c = pred[c];
+        }
+        System.out.println("Shortest path length is: " + dist[dest.getElement()]);
+    }
 }

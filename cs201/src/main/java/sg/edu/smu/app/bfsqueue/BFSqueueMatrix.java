@@ -1,7 +1,6 @@
 package sg.edu.smu.app.bfsqueue;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Arrays;
 
 public class BFSqueueMatrix {
@@ -72,5 +71,24 @@ public class BFSqueueMatrix {
         while (!path.isEmpty())
             System.out.print(path.remove() + " ");
         System.out.println();
+    }
+
+    // Function to trace route using preceding nodes
+    public void calShortestPath(int src, int dest) {
+        int[] pred = new int[v];
+        int[] dist = new int[v];
+        if (!bfs(src, dest, pred, dist)) {
+            System.out.println("Given source and destination are not connected");
+            return;
+        }
+
+        // LinkedList to store path
+        LinkedList<Integer> path = new LinkedList<>();
+        int walk = dest;
+        while (walk != -1) {
+            path.addFirst(walk);
+            walk = pred[walk];
+        }
+        System.out.println("Shortest path length is: " + dist[dest]);
     }
 }

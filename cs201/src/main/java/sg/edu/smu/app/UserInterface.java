@@ -38,14 +38,7 @@ public class UserInterface {
     public void createUI() {
         // Creating the Frame
         JFrame frame = new JFrame("CS201G1T2");
-        frame.setSize(900, 600);
-
-        // GraphDraw graph = new GraphDraw();
-        // graph.addNode("a", 50, 50);
-        // graph.addNode("b", 100, 100);
-        // graph.addNode("c", 200, 200);
-        // graph.addEdge(0, 1);
-        // graph.addEdge(0, 2);
+        frame.setSize(900, 800);
 
         // Creating the panel at bottom and adding components
         JPanel formPanel = new JPanel(); // the panel is not visible in output
@@ -63,7 +56,6 @@ public class UserInterface {
         JLabel algoLabel = new JLabel("Algorithm");
         String[] algoChoices = { "BFS", "Djikstra Algo" };
         algoBox = new JComboBox<String>(algoChoices);
-
         resultArea = new JTextArea();
 
         JButton sendBtn = new JButton("Connect");
@@ -71,7 +63,7 @@ public class UserInterface {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JSONArray users = null;
-                try (Reader reader = new FileReader("data/500.json")) {
+                try (Reader reader = new FileReader("data/300.json")) {
                     users = (JSONArray) parser.parse(reader);
                 } catch (Exception exc) {
                     exc.printStackTrace();
@@ -177,26 +169,46 @@ public class UserInterface {
                 labels = null;
                 n = null;
 
-                System.out.println("Data size: " + mapList.size());
-
                 int times = 10;
+                
+                // Run fixed testing with a sample size of 10
+                Object[][] testSample = {
+                    {"Dbu4K86H0CrGnBy_y0_63g", "343K-LPawvplmuCvr7eOCg"},
+                    {"UQtSDCRIZUKSZGyTvl0V6A", "AgCExWQ84NuDc3tju64hCA"},
+                    {"0BIhsZPZiETZKkaEmBXvJw", "qhglDnh-9476eCbXP_5iRA"},
+                    {"MGXNCkynlb1KIdpBEJFpRA", "-SaUH70o8_wV9Y3LSZIffw"},
+                    {"yTF3Mjvase9wNJ81xs4Seg", "U2oc0H5t8vV2YyllSFCAkg"},
+                    {"A1OCYUfcyU90_LlJyzMOLw", "0K5T6ZHxCtxTq2342ZI8Tg"},
+                    {"y-ThVDgGSozgomnMRuuDGQ", "rTcpmRg8SRnZtebGWfk9Qw"},
+                    {"m6dN--8obTQ4iqrBLqk_2Q", "BvuHHm5QLEfxxwOXUtKpkg"},
+                    {"A1OCYUfcyU90_LlJyzMOLw", "0K5T6ZHxCtxTq2342ZI8Tg"},
+                    {"m6dN--8obTQ4iqrBLqk_2Q", "rTcpmRg8SRnZtebGWfk9Qw"}
+                };
+                
+                // Run Random testing
+                // Object[][] testSample = new Object[times][2];
+                // for (int i = 0; i < times; i++) {
+                //     testSample[i][0] = mapList.get(new Random().nextInt(mapList.size()));
+                //     testSample[i][1] = mapList.get(new Random().nextInt(mapList.size()));
+                // }
+
                 RunInput inputExperiments = new RunInput(verts, mapList);
                 resultArea.setText("");
                 JTextAreaOutputStream out = new JTextAreaOutputStream(resultArea);
                 System.setOut(new PrintStream(out));
 
                 Graph<Integer, Integer> adjMap = generateAdjacencyMapFromData(users, g, verts);
-                inputExperiments.runMapDjikstra(adjMap, times);
-                inputExperiments.runMapBFS(adjMap, times);
+                inputExperiments.runMapDjikstra(adjMap, testSample, times);
+                inputExperiments.runMapBFS(adjMap,testSample, times);
 
                 List<List<Integer>> adjList = generateAdjacencyListFromData(users, verts).getGraph();
-                inputExperiments.runListDjikstra(adjList, times);
-                inputExperiments.runListBFS(adjList, times);
+                inputExperiments.runListDjikstra(adjList, testSample, times);
+                inputExperiments.runListBFS(adjList, testSample, times);
 
                 try {
                     GraphAjdacencyMatrix adjMatrix = generateAdjacencyMatrixFromData(users, verts);
-                    inputExperiments.runMatrixDjikstra(adjMatrix, times);
-                    inputExperiments.runMatrixBFS(adjMatrix, times);
+                    inputExperiments.runMatrixDjikstra(adjMatrix, testSample, times);
+                    inputExperiments.runMatrixBFS(adjMatrix, testSample, times);
                 } catch (OutOfMemoryError ot) {
                     System.out.println("Memory out of heap");
                 }
@@ -297,7 +309,7 @@ public class UserInterface {
         inAlgoTestBtn.getActionMap().put("Enter", inAlgoTest);
         inAlgoTestBtn.addActionListener(inAlgoTest);
 
-        formPanel.setLayout(new GridLayout(6, 4, 10, 10));
+        formPanel.setLayout(new GridLayout(7, 2, 10, 10));
         formPanel.add(label1);
         formPanel.add(fromIdInput);
 
@@ -310,13 +322,15 @@ public class UserInterface {
         formPanel.add(algoLabel);
         formPanel.add(algoBox);
 
+        formPanel.add(new JLabel());
         formPanel.add(sendBtn);
+
         formPanel.add(inputTestBtn);
         formPanel.add(inAlgoTestBtn);
 
         JSONParser parser = new JSONParser();
         JSONArray users = null;
-        try (Reader reader = new FileReader("data/500.json")) {
+        try (Reader reader = new FileReader("data/300.json")) {
             users = (JSONArray) parser.parse(reader);
         } catch (Exception e) {
             e.printStackTrace();
@@ -340,7 +354,6 @@ public class UserInterface {
             verts.put(label, g.insertVertex(n++));
         }
 
-        JLabel userTableLbale = new JLabel("User List");
         JPanel userPanel = new JPanel();
         JTable userTable = new JTable(userData, userColumnNames);
         userPanel.setLayout(new GridLayout(0, 1));

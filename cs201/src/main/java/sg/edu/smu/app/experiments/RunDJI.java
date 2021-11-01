@@ -82,7 +82,6 @@ public class RunDJI {
     System.out.println("This actually takes very long, hence pre run results are printed instead");
     System.out.println("Shortest path length is: 5");
     System.out.println("Time to Compute Path: 4774.6261447s");
-    System.out.println("Used memory is bytes: 134289280");
     System.out.println("Used memory is megabytes: 128MB");
     System.out.println("\n--------------------------------------------------\n");
   }
@@ -151,8 +150,7 @@ public class RunDJI {
     System.out.println("Adjacency Map + Djikstra (Sorted Array using bSearch)");
     System.out.println("This actually takes quite long, hence pre run results are printed instead");
     System.out.println("Shortest path length is: 5");
-    System.out.println("Average time taken out of 1 runs: 1070.3592277");
-    System.out.println("Used memory is bytes: 149579216");
+    System.out.println("Average time taken out of 1 runs: 1070.3592277S");
     System.out.println("Used memory is megabytes: 142MB");
     System.out.println("\n--------------------------------------------------\n");
   }
