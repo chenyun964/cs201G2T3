@@ -32,9 +32,6 @@ public class RunInput {
         for (int i = 0; i < times; i++) {
             Vertex<Integer> src = verts.get(mapList.get(new Random().nextInt(mapList.size())));
             Vertex<Integer> dest = verts.get(mapList.get(new Random().nextInt(mapList.size())));
-            System.out.println();
-            System.out.println("Form：" + src.getElement());
-            System.out.println("To: " + dest.getElement());
 
             startTime = System.nanoTime();
             runtime = Runtime.getRuntime();
@@ -57,9 +54,6 @@ public class RunInput {
         for (int i = 0; i < times; i++) {
             Vertex<Integer> src = verts.get(mapList.get(new Random().nextInt(mapList.size())));
             Vertex<Integer> dest = verts.get(mapList.get(new Random().nextInt(mapList.size())));
-            System.out.println();
-            System.out.println("Form：" + src.getElement());
-            System.out.println("To: " + dest.getElement());
 
             runtime = Runtime.getRuntime();
             startTime = System.nanoTime();
@@ -82,9 +76,6 @@ public class RunInput {
         for (int i = 0; i < times; i++) {
             Vertex<Integer> src = verts.get(mapList.get(new Random().nextInt(mapList.size())));
             Vertex<Integer> dest = verts.get(mapList.get(new Random().nextInt(mapList.size())));
-            System.out.println();
-            System.out.println("Form：" + src.getElement());
-            System.out.println("To: " + dest.getElement());
 
             startTime = System.nanoTime();
             runtime = Runtime.getRuntime();
@@ -107,9 +98,6 @@ public class RunInput {
         for (int i = 0; i < times; i++) {
             Vertex<Integer> src = verts.get(mapList.get(new Random().nextInt(mapList.size())));
             Vertex<Integer> dest = verts.get(mapList.get(new Random().nextInt(mapList.size())));
-            System.out.println();
-            System.out.println("Form：" + src.getElement());
-            System.out.println("To: " + dest.getElement());
 
             runtime = Runtime.getRuntime();
             startTime = System.nanoTime();
@@ -132,9 +120,6 @@ public class RunInput {
         for (int i = 0; i < times; i++) {
             Vertex<Integer> src = verts.get(mapList.get(new Random().nextInt(mapList.size())));
             Vertex<Integer> dest = verts.get(mapList.get(new Random().nextInt(mapList.size())));
-            System.out.println();
-            System.out.println("Form：" + src.getElement());
-            System.out.println("To: " + dest.getElement());
 
             startTime = System.nanoTime();
             runtime = Runtime.getRuntime();
@@ -157,9 +142,6 @@ public class RunInput {
         for (int i = 0; i < times; i++) {
             Vertex<Integer> src = verts.get(mapList.get(new Random().nextInt(mapList.size())));
             Vertex<Integer> dest = verts.get(mapList.get(new Random().nextInt(mapList.size())));
-            System.out.println();
-            System.out.println("Form：" + src.getElement());
-            System.out.println("To: " + dest.getElement());
 
             startTime = System.nanoTime();
             runtime = Runtime.getRuntime();

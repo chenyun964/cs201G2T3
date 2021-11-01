@@ -235,7 +235,7 @@ public class UserInterface {
                     uniqueList.put(label, n++);
                 }
 
-                List<Integer> keyLists = new ArrayList<>(uniqueList.values());
+                // List<Integer> keyLists = new ArrayList<>(uniqueList.values());
                 // int id1 = keyLists.get(new Random().nextInt(keyLists.size()));
                 // int id2 = keyLists.get(new Random().nextInt(keyLists.size()));
                 int id1 = uniqueList.get("YiSFCdyb0dJQrSAGRzkzAw");

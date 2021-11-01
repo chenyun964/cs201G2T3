@@ -59,10 +59,12 @@ public class DijkstraList {
             path.addFirst(pred[c]);
             c = pred[c];
         }
+
         System.out.println("Shortest path length is: " + dist[dest]);
         System.out.println("Path is :");
         for (int i = 0; i < path.size(); i++)
             System.out.print(path.get(i) + " ");
         System.out.println();
+
     }
 }

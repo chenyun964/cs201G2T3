@@ -111,6 +111,7 @@ public class DijkstraMap {
             path.addFirst(pred[c]);
             c = pred[c];
         }
+
         System.out.println("Shortest path length is: " + dist[dest.getElement()]);
         System.out.println("Path is :");
         for (int i = 0; i < path.size(); i++)
