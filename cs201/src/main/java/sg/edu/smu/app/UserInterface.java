@@ -101,7 +101,8 @@ public class UserInterface {
 
                 ds = dsBox.getSelectedItem().toString();
                 algo = algoBox.getSelectedItem().toString();
-                if (ds.equals("BFS")) {
+
+                if (algo.equals("BFS")) {
                     switch (ds) {
                     case "Ajdacency Map":
                         Graph<Integer, Integer> adjMap = generateAdjacencyMapFromData(users, g, verts);
@@ -121,7 +122,7 @@ public class UserInterface {
                         break;
                     default:
                     }
-                } else if (ds.equals("Djikstra Algo")) {
+                } else if (algo.equals("Djikstra Algo")) {
                     switch (ds) {
                     case "Ajdacency Map":
                         Graph<Integer, Integer> adjMap = generateAdjacencyMapFromData(users, g, verts);
@@ -263,7 +264,7 @@ public class UserInterface {
                 resultArea.setText("");
                 JTextAreaOutputStream out = new JTextAreaOutputStream(resultArea);
                 System.setOut(new PrintStream(out));
-                
+
                 /**
                  * Adjacency Map + Djikstra PQ
                  */
