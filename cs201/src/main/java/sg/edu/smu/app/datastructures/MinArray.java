@@ -1,5 +1,9 @@
 package sg.edu.smu.app.datastructures;
 
+/**
+ * This file contains the Binary Searched Array
+ */
+
 import java.util.*;
 
 public class MinArray {

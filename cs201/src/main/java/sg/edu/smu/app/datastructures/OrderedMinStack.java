@@ -1,5 +1,9 @@
 package sg.edu.smu.app.datastructures;
 
+/**
+ * This file contains the Stack data structure used in Dijkstra + Stack implementation
+ */
+
 import java.util.Stack;
 
 public class OrderedMinStack {

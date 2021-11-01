@@ -1,5 +1,9 @@
 package sg.edu.smu.app.datastructures;
 
+/**
+ * This file contains the Vertex used in Dijkstra LL + HM etc... experiments
+ */
+
 import java.util.Comparator;
 
 public class CustomNode implements Comparator<CustomNode> {

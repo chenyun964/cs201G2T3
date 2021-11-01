@@ -1,5 +1,10 @@
 package sg.edu.smu.app.DjikstraLinkedList;
 
+/**
+ * This file contains all the different data structures that were gone through in the slides
+ * LL + HM, HM + CA, Stack
+ */
+
 import java.util.*;
 import sg.edu.smu.app.datastructures.CustomNode;
 import sg.edu.smu.app.datastructures.OrderedMinStack;
@@ -9,9 +14,7 @@ import sg.edu.smu.app.datastructures.MinHashMap;
 import sg.edu.smu.app.datastructures.MinArray;
 
 public class DijkstraLinkedList {
-  /**
-   * Set all to public cus no encapsulation required
-   */
+
   public int numVertices;
   public Map<Integer, List<CustomNode>> adjList;
   public int distArr[];
@@ -37,6 +40,8 @@ public class DijkstraLinkedList {
   }
   
   // Dijkstra source: https://www.geeksforgeeks.org/dijkstras-shortest-path-algorithm-greedy-algo-7/
+  // This is the Base Case, Dijkstra Algo with PQ implementation
+
   public void dijkstra_PQ(Map<Integer, List<CustomNode>> adj, int source) {
     // init all nodes with distance of infinity first
     for (int i = 0; i < numVertices; i++)
@@ -83,6 +88,7 @@ public class DijkstraLinkedList {
     }
   }
 
+  // This is the Dijkstra Algo with Linked Linked + HashMap implementation
   public void dijkstra_LL_HM(Map<Integer, List<CustomNode>> adj, int source) {
     SortedLinkedList ll = new SortedLinkedList();
 
@@ -120,6 +126,7 @@ public class DijkstraLinkedList {
     }
   }
 
+  // This is the Dijkstra Algo with Linked Linked only implementation
   public void dijkstra_LL(Map<Integer, List<CustomNode>> adj, int source) {
     SortedLinkedListWithoutHashMap ll = new SortedLinkedListWithoutHashMap();
 
@@ -155,6 +162,7 @@ public class DijkstraLinkedList {
     }
   }
   
+  // This is the Dijkstra Algo with Stack implementation
   public void dijkstra_Stack(Map<Integer, List<CustomNode>> adj, int source) {
     OrderedMinStack ll = new OrderedMinStack();
 
@@ -190,6 +198,7 @@ public class DijkstraLinkedList {
     }
   }
 
+  // This is the Dijkstra Algo with HashMap and Circular Array implementation
   public void dijkstra_HashMap_Que(Map<Integer, List<CustomNode>> adj, int source) {
     MinHashMap ll = new MinHashMap();
 
@@ -225,6 +234,7 @@ public class DijkstraLinkedList {
     }
   }
 
+  // This is the Dijkstra Algo with HashMap and Array sorted via Binary search implementation
   public void dijkstra_Array_bSearch(Map<Integer, List<CustomNode>> adj, int source) {
     MinArray ll = new MinArray();
     

@@ -1,5 +1,9 @@
 package sg.edu.smu.app.datastructures;
 
+/**
+ * This file contains the LL + HM implementation used in the Dijkstra LL + HM experiment
+ */
+
 import java.util.*;
 
 public class SortedLinkedList {

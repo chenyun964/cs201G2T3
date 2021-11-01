@@ -1,5 +1,9 @@
 package sg.edu.smu.app.datastructures;
 
+/**
+ * This file contains the data structure used for the LL only experiment
+ */
+
 public class SortedLinkedListWithoutHashMap {
   private CustomNode header, trailer;
   private int size = 0;

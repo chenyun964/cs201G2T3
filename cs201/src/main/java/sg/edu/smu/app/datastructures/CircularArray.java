@@ -1,5 +1,9 @@
 package sg.edu.smu.app.datastructures;
 
+/**
+ * This file contains the Circular Array used in the Dijkstra HM + CA implementation
+ */
+
 public class CircularArray {
 
   public CustomNode[] array;

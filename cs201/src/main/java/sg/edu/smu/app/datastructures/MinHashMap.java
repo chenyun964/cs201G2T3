@@ -1,5 +1,9 @@
 package sg.edu.smu.app.datastructures;
 
+/**
+ * This file contains the HM + CA data structure used in Dijkstra HM + CA implementation
+ */
+
 import java.util.*;
 
 public class MinHashMap {

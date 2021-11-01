@@ -1,5 +1,9 @@
 package sg.edu.smu.app.experiments;
 
+/**
+ * This file contains the methods used to run the experiments (Dijkstra with diff DS implementation)
+ */
+
 import sg.edu.smu.app.DjikstraLinkedList.DijkstraLinkedList;
 import java.util.*;
 import sg.edu.smu.app.datastructures.CustomNode;
