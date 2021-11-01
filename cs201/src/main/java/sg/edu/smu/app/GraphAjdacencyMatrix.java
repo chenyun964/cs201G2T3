@@ -1,8 +1,8 @@
 package sg.edu.smu.app;
 
 public class GraphAjdacencyMatrix {
-    int vertex;
-    int[][] matrix;
+    public int vertex;
+    public int[][] matrix;
 
     public GraphAjdacencyMatrix(int vertex) {
         this.vertex = vertex;
