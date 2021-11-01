@@ -235,8 +235,10 @@ public class UserInterface {
                 }
 
                 List<Integer> keyLists = new ArrayList<>(uniqueList.values());
-                int id1 = keyLists.get(new Random().nextInt(keyLists.size()));
-                int id2 = keyLists.get(new Random().nextInt(keyLists.size()));
+                // int id1 = keyLists.get(new Random().nextInt(keyLists.size()));
+                // int id2 = keyLists.get(new Random().nextInt(keyLists.size()));
+                int id1 = uniqueList.get("YiSFCdyb0dJQrSAGRzkzAw");
+                int id2 = uniqueList.get("dxqHh0JYQg9_X7whNAWWVA");
 
                 Map<Integer, List<CustomNode>> adjMap = new HashMap<>();
 
@@ -254,13 +256,14 @@ public class UserInterface {
                 }
 
                 int numVertices = adjMap.size();
+                System.out.println(numVertices);
 
                 int times = 10;
                 RunDJI djiExperiments = new RunDJI();
                 resultArea.setText("");
                 JTextAreaOutputStream out = new JTextAreaOutputStream(resultArea);
                 System.setOut(new PrintStream(out));
-
+                
                 /**
                  * Adjacency Map + Djikstra PQ
                  */

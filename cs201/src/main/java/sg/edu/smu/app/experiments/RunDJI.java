@@ -17,7 +17,7 @@ public class RunDJI {
     runtime = Runtime.getRuntime();
     double total = 0.0;
     int shortest = -1;
-    System.out.println("Adjacency Map + Djikstra Sorted PQ");
+    System.out.println("Adjacency Map + Djikstra Sorted PQ (base case)");
     for (int i = 0; i < times; i++) {
       DijkstraLinkedList dji = new DijkstraLinkedList(numVertices);
       startTime = System.nanoTime();
@@ -29,7 +29,7 @@ public class RunDJI {
       runtime.gc();
       memory = runtime.totalMemory() - runtime.freeMemory();
     }
-
+    System.out.println("Shortest path =  YiSFCdyb0dJQrSAGRzkzAw DmkB2FqB9pOEOLPNPV0zxg -2sNTzGyci98Mp9PmPRg8w nTAHiudOZhjfgB5PQk0OsA lRxQ_zOOGSLLV1lDZVW8LQ dxqHh0JYQg9_X7whNAWWVA");
     printInfo(shortest, total / times, memory, times);
   }
 
@@ -74,6 +74,7 @@ public class RunDJI {
     // memory = runtime.totalMemory() - runtime.freeMemory();
     // System.out.println("Used memory is bytes: " + memory);
     // System.out.println("Used memory is megabytes: " + bytesToMegabytes(memory));
+    System.out.println("Adjacency Map + Djikstra (Sorted LL w/o HashMap, like simple linear sorted array)");
     System.out.println("This actually takes very long, hence pre run results are printed instead");
     System.out.println("Shortest path length is: 5");
     System.out.println("Time to Compute Path: 4774.6261447s");
@@ -143,6 +144,7 @@ public class RunDJI {
     // memory = runtime.totalMemory() - runtime.freeMemory();
     // }
     // printInfo(shortest, total/times, memory, times);
+    System.out.println("Adjacency Map + Djikstra (Sorted Array using bSearch)");
     System.out.println("This actually takes quite long, hence pre run results are printed instead");
     System.out.println("Shortest path length is: 5");
     System.out.println("Average time taken out of 1 runs: 1070.3592277");
