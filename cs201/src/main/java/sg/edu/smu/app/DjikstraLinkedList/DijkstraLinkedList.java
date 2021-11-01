@@ -35,7 +35,8 @@ public class DijkstraLinkedList {
 
   public static void main(String[] args) {
   }
-
+  
+  // Dijkstra source: https://www.geeksforgeeks.org/dijkstras-shortest-path-algorithm-greedy-algo-7/
   public void dijkstra_PQ(Map<Integer, List<CustomNode>> adj, int source) {
     // init all nodes with distance of infinity first
     for (int i = 0; i < numVertices; i++)
