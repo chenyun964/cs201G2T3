@@ -30,7 +30,7 @@ public class TestApplication {
         System.out.println("Load Data...");
         JSONParser parser = new JSONParser();
         JSONArray users = null;
-        try (Reader reader = new FileReader("data/100.json")) {
+        try (Reader reader = new FileReader("data/1k.json")) {
             users = (JSONArray) parser.parse(reader);
         } catch (Exception e) {
             e.printStackTrace();
@@ -153,45 +153,53 @@ public class TestApplication {
         System.out.println("Used memory in megabytes: " + bytesToMegabytes(memory) + "MB");
         System.out.println("\n--------------------------------------------------\n");
 
+        GraphAjdacencyMatrix graph = null;
+
         /**
          * Adjacency Matrix + Dijkstra PQ
          */
         // Generate Adjacency Matrix
-        GraphAjdacencyMatrix graph = new GraphAjdacencyMatrix(mapList.size());
-        generateAdjacencyMatrixFromData(graph, users, verts);
-        System.out.println("Adjacency Matrix + Dijkstra PQ");
-        startTime = System.nanoTime();
-        runtime = Runtime.getRuntime();
-        BFSqueueMatrix dijMatrix = new BFSqueueMatrix(graph.matrix, graph.vertex);
-        dijMatrix.printShortestPath(v1.getElement(), v2.getElement());
-        endTime = System.nanoTime();
-        totalTime = endTime - startTime;
-        System.out.println("Time to Compute Path: " + totalTime / divider + "s");
-        // Run the garbage collector
-        runtime.gc();
-        // Calculate the used memory
-        memory = runtime.totalMemory() - runtime.freeMemory();
-        System.out.println("Used memory in bytes: " + memory);
-        System.out.println("Used memory in megabytes: " + bytesToMegabytes(memory) + "MB");
-        System.out.println("\n--------------------------------------------------\n");
+        try{
+            graph = new GraphAjdacencyMatrix(mapList.size());
+            generateAdjacencyMatrixFromData(graph, users, verts);
+            System.out.println("Adjacency Matrix + Dijkstra PQ");
+            startTime = System.nanoTime();
+            runtime = Runtime.getRuntime();
+            BFSqueueMatrix dijMatrix = new BFSqueueMatrix(graph.matrix, graph.vertex);
+            dijMatrix.printShortestPath(v1.getElement(), v2.getElement());
+            endTime = System.nanoTime();
+            totalTime = endTime - startTime;
+            System.out.println("Time to Compute Path: " + totalTime / divider + "s");
+            // Run the garbage collector
+            runtime.gc();
+            // Calculate the used memory
+            memory = runtime.totalMemory() - runtime.freeMemory();
+            System.out.println("Used memory in bytes: " + memory);
+            System.out.println("Used memory in megabytes: " + bytesToMegabytes(memory));
+            System.out.println("\n--------------------------------------------------\n");
 
-        /**
-         * Adjacency Matrix + BFS Queue
-         */
-        System.out.println("Adjacency Matrix + BFS Queue");
-        startTime = System.nanoTime();
-        runtime = Runtime.getRuntime();
-        BFSqueueMatrix bfsMatrix = new BFSqueueMatrix(graph.matrix, graph.vertex);
-        bfsMatrix.printShortestPath(v1.getElement(), v2.getElement());
-        endTime = System.nanoTime();
-        totalTime = endTime - startTime;
-        System.out.println("Time to Compute Path: " + totalTime / divider + "s");
-        // Run the garbage collector
-        runtime.gc();
-        // Calculate the used memory
-        memory = runtime.totalMemory() - runtime.freeMemory();
-        System.out.println("Used memory in bytes: " + memory);
-        System.out.println("Used memory in megabytes: " + bytesToMegabytes(memory) + "MB");
+            /**
+             * Adjacency Matrix + BFS Queue
+             */
+            generateAdjacencyMatrixFromData(graph, users, verts);
+            System.out.println("Adjacency Matrix + BFS Queue");
+            startTime = System.nanoTime();
+            runtime = Runtime.getRuntime();
+            BFSqueueMatrix bfsMatrix = new BFSqueueMatrix(graph.matrix, graph.vertex);
+            bfsMatrix.printShortestPath(v1.getElement(), v2.getElement());
+            endTime = System.nanoTime();
+            totalTime = endTime - startTime;
+            System.out.println("Time to Compute Path: " + totalTime / divider + "s");
+            // Run the garbage collector
+            runtime.gc();
+            // Calculate the used memory
+            memory = runtime.totalMemory() - runtime.freeMemory();
+            System.out.println("Used memory in bytes: " + memory);
+            System.out.println("Used memory in megabytes: " + bytesToMegabytes(memory));
+        }catch (OutOfMemoryError ot){
+            System.out.println("Memory out of heap");
+        }
+
         System.out.println("\n--------------------------------------------------\n");
         System.out.println("\n------------------ End Test ----------------------\n");
     }
