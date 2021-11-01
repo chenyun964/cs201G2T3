@@ -15,8 +15,6 @@ public class RunInput {
     private static final Double divider = 1000000000.0;
     private static long startTime;
     private static long endTime;
-    private static long totalTime;
-    private static long memory;
     private static Runtime runtime;
     HashMap<Integer, String> mapList;
     HashMap<String, Vertex<Integer>> verts;
@@ -27,9 +25,34 @@ public class RunInput {
     }
 
     public void runMapDjikstra(Graph<Integer, Integer> g, int times) {
-        runtime = Runtime.getRuntime();
         System.out.println("Adjacency Map + Djikstra PQ");
         double total = 0.0;
+        double totalM = 0.0;
+
+        for (int i = 0; i < times; i++) {
+            Vertex<Integer> src = verts.get(mapList.get(new Random().nextInt(mapList.size())));
+            Vertex<Integer> dest = verts.get(mapList.get(new Random().nextInt(mapList.size())));
+            System.out.println();
+            System.out.println("Form：" + src.getElement());
+            System.out.println("To: " + dest.getElement());
+
+            startTime = System.nanoTime();
+            runtime = Runtime.getRuntime();
+            DijkstraMap dijMap = new DijkstraMap(g);
+            dijMap.printShortestDistance(src, dest);
+            endTime = System.nanoTime();
+            total += ((endTime - startTime) / divider);
+            runtime.gc();
+            totalM += runtime.totalMemory() - runtime.freeMemory();
+        }
+
+        printInfo(total / times, totalM / times, times);
+    }
+
+    public void runMapBFS(Graph<Integer, Integer> g, int times) {
+        System.out.println("Adjacency Map + BFS Queue");
+        double total = 0.0;
+        double totalM = 0.0;
 
         for (int i = 0; i < times; i++) {
             Vertex<Integer> src = verts.get(mapList.get(new Random().nextInt(mapList.size())));
@@ -40,47 +63,21 @@ public class RunInput {
 
             runtime = Runtime.getRuntime();
             startTime = System.nanoTime();
-            DijkstraMap dijMap = new DijkstraMap(g);
-            dijMap.printShortestDistance(src, dest);
-            endTime = System.nanoTime();
-            totalTime = endTime - startTime;
-            total += (totalTime / divider);
-            runtime.gc();
-            memory = runtime.totalMemory() - runtime.freeMemory();
-        }
-
-        printInfo(total / times, memory, times);
-    }
-
-    public void runMapBFS(Graph<Integer, Integer> g, int times) {
-        runtime = Runtime.getRuntime();
-        System.out.println("Adjacency Map + BFS Queue");
-        double total = 0.0;
-
-        for (int i = 0; i < times; i++) {
-            Vertex<Integer> src = verts.get(mapList.get(new Random().nextInt(mapList.size())));
-            Vertex<Integer> dest = verts.get(mapList.get(new Random().nextInt(mapList.size())));
-            System.out.println();
-            System.out.println("Form：" + src.getElement());
-            System.out.println("To: " + dest.getElement());
-
-            startTime = System.nanoTime();
             BFSqueueMap bfs = new BFSqueueMap(g);
             bfs.printShortestPath(src, dest);
             endTime = System.nanoTime();
-            totalTime = endTime - startTime;
-            total += (totalTime / divider);
+            total += ((endTime - startTime) / divider);
             runtime.gc();
-            memory = runtime.totalMemory() - runtime.freeMemory();
+            totalM += runtime.totalMemory() - runtime.freeMemory();
         }
 
-        printInfo(total / times, memory, times);
+        printInfo(total / times, totalM / times, times);
     }
 
     public void runListDjikstra(List<List<Integer>> g, int times) {
-        runtime = Runtime.getRuntime();
         System.out.println("Adjacency List + Dijkstra PQ");
         double total = 0.0;
+        double totalM = 0.0;
 
         for (int i = 0; i < times; i++) {
             Vertex<Integer> src = verts.get(mapList.get(new Random().nextInt(mapList.size())));
@@ -90,22 +87,22 @@ public class RunInput {
             System.out.println("To: " + dest.getElement());
 
             startTime = System.nanoTime();
+            runtime = Runtime.getRuntime();
             DijkstraList dijList = new DijkstraList(g);
             dijList.printShortestDistance(src.getElement(), dest.getElement());
             endTime = System.nanoTime();
-            totalTime = endTime - startTime;
-            total += (totalTime / divider);
+            total += ((endTime - startTime) / divider);
             runtime.gc();
-            memory = runtime.totalMemory() - runtime.freeMemory();
+            totalM += runtime.totalMemory() - runtime.freeMemory();
         }
 
-        printInfo(total / times, memory, times);
+        printInfo(total / times, totalM / times, times);
     }
 
     public void runListBFS(List<List<Integer>> g, int times) {
-        runtime = Runtime.getRuntime();
         System.out.println("Adjacency List + BFS Queue");
         double total = 0.0;
+        double totalM = 0.0;
 
         for (int i = 0; i < times; i++) {
             Vertex<Integer> src = verts.get(mapList.get(new Random().nextInt(mapList.size())));
@@ -119,19 +116,18 @@ public class RunInput {
             BFSqueueList bfsList = new BFSqueueList(g);
             bfsList.printShortestDistance(src.getElement(), dest.getElement());
             endTime = System.nanoTime();
-            totalTime = endTime - startTime;
-            total += (totalTime / divider);
+            total += ((endTime - startTime) / divider);
             runtime.gc();
-            memory = runtime.totalMemory() - runtime.freeMemory();
+            totalM += runtime.totalMemory() - runtime.freeMemory();
         }
 
-        printInfo(total / times, memory, times);
+        printInfo(total / times, totalM / times, times);
     }
 
     public void runMatrixDjikstra(GraphAjdacencyMatrix g, int times) {
-        runtime = Runtime.getRuntime();
         System.out.println("Adjacency Matrix + Dijkstra PQ");
         double total = 0.0;
+        double totalM = 0.0;
 
         for (int i = 0; i < times; i++) {
             Vertex<Integer> src = verts.get(mapList.get(new Random().nextInt(mapList.size())));
@@ -145,19 +141,18 @@ public class RunInput {
             BFSqueueMatrix dijMatrix = new BFSqueueMatrix(g.matrix, g.vertex);
             dijMatrix.printShortestPath(src.getElement(), dest.getElement());
             endTime = System.nanoTime();
-            totalTime = endTime - startTime;
-            total += (totalTime / divider);
+            total += ((endTime - startTime) / divider);
             runtime.gc();
-            memory = runtime.totalMemory() - runtime.freeMemory();
+            totalM += runtime.totalMemory() - runtime.freeMemory();
         }
 
-        printInfo(total / times, memory, times);
+        printInfo(total / times, totalM / times, times);
     }
 
     public void runMatrixBFS(GraphAjdacencyMatrix g, int times) {
-        runtime = Runtime.getRuntime();
         System.out.println("Adjacency Matrix + BFS Queue");
         double total = 0.0;
+        double totalM = 0.0;
 
         for (int i = 0; i < times; i++) {
             Vertex<Integer> src = verts.get(mapList.get(new Random().nextInt(mapList.size())));
@@ -166,26 +161,146 @@ public class RunInput {
             System.out.println("Form：" + src.getElement());
             System.out.println("To: " + dest.getElement());
 
-            BFSqueueMatrix bfsMatrix = new BFSqueueMatrix(g.matrix, g.vertex);
             startTime = System.nanoTime();
+            runtime = Runtime.getRuntime();
+            BFSqueueMatrix bfsMatrix = new BFSqueueMatrix(g.matrix, g.vertex);
             bfsMatrix.printShortestPath(src.getElement(), dest.getElement());
             endTime = System.nanoTime();
-            totalTime = endTime - startTime;
-            total += (totalTime / divider);
+            total += ((endTime - startTime) / divider);
             runtime.gc();
-            memory = runtime.totalMemory() - runtime.freeMemory();
+            totalM += runtime.totalMemory() - runtime.freeMemory();
         }
 
-        printInfo(total / times, memory, times);
+        printInfo(total / times, totalM / times, times);
     }
 
-    public static void printInfo(double average, long memory, int times) {
+    public void runMapDjikstra(Graph<Integer, Integer> g, Vertex<Integer> src, Vertex<Integer> dest) {
+        System.out.println("Form：" + src.getElement());
+        System.out.println("To: " + dest.getElement());
+        
+        System.out.println("Adjacency Map + Djikstra PQ");
+        double total = 0.0;
+        double totalM = 0.0;
+
+        startTime = System.nanoTime();
+        runtime = Runtime.getRuntime();
+        DijkstraMap dijMap = new DijkstraMap(g);
+        dijMap.printShortestDistance(src, dest);
+        endTime = System.nanoTime();
+        total += ((endTime - startTime) / divider);
+        runtime.gc();
+        totalM += runtime.totalMemory() - runtime.freeMemory();
+
+        printInfo(total, totalM, 1);
+    }
+
+    public void runMapBFS(Graph<Integer, Integer> g, Vertex<Integer> src, Vertex<Integer> dest) {
+        System.out.println("Form：" + src.getElement());
+        System.out.println("To: " + dest.getElement());
+
+        System.out.println("Adjacency Map + BFS Queue");
+        double total = 0.0;
+        double totalM = 0.0;
+
+        startTime = System.nanoTime();
+        runtime = Runtime.getRuntime();
+        BFSqueueMap bfs = new BFSqueueMap(g);
+        bfs.printShortestPath(src, dest);
+        endTime = System.nanoTime();
+        total += ((endTime - startTime) / divider);
+        runtime.gc();
+        totalM += runtime.totalMemory() - runtime.freeMemory();
+
+        printInfo(total, totalM, 1);
+    }
+
+    public void runListDjikstra(List<List<Integer>> g, Vertex<Integer> src, Vertex<Integer> dest) {
+        System.out.println("Form：" + src.getElement());
+        System.out.println("To: " + dest.getElement());
+
+        System.out.println("Adjacency List + Dijkstra PQ");
+        double total = 0.0;
+        double totalM = 0.0;
+
+        startTime = System.nanoTime();
+        runtime = Runtime.getRuntime();
+        DijkstraList dijList = new DijkstraList(g);
+        dijList.printShortestDistance(src.getElement(), dest.getElement());
+        endTime = System.nanoTime();
+        total += ((endTime - startTime) / divider);
+        runtime.gc();
+        totalM += runtime.totalMemory() - runtime.freeMemory();
+
+        printInfo(total, totalM, 1);
+    }
+
+    public void runListBFS(List<List<Integer>> g, Vertex<Integer> src, Vertex<Integer> dest) {
+        System.out.println("Form：" + src.getElement());
+        System.out.println("To: " + dest.getElement());
+
+        System.out.println("Adjacency List + BFS Queue");
+        double total = 0.0;
+        double totalM = 0.0;
+
+        startTime = System.nanoTime();
+        runtime = Runtime.getRuntime();
+        BFSqueueList bfsList = new BFSqueueList(g);
+        bfsList.printShortestDistance(src.getElement(), dest.getElement());
+        endTime = System.nanoTime();
+        total += ((endTime - startTime) / divider);
+        runtime.gc();
+        totalM += runtime.totalMemory() - runtime.freeMemory();
+
+        printInfo(total, totalM, 1);
+    }
+
+    public void runMatrixDjikstra(GraphAjdacencyMatrix g, Vertex<Integer> src, Vertex<Integer> dest) {
+        System.out.println("Form：" + src.getElement());
+        System.out.println("To: " + dest.getElement());
+
+        System.out.println("Adjacency Matrix + Dijkstra PQ");
+        double total = 0.0;
+        double totalM = 0.0;
+
+        startTime = System.nanoTime();
+        runtime = Runtime.getRuntime();
+        BFSqueueMatrix dijMatrix = new BFSqueueMatrix(g.matrix, g.vertex);
+        dijMatrix.printShortestPath(src.getElement(), dest.getElement());
+        endTime = System.nanoTime();
+        total += ((endTime - startTime) / divider);
+        runtime.gc();
+        totalM += runtime.totalMemory() - runtime.freeMemory();
+
+        printInfo(total, totalM, 1);
+    }
+
+    public void runMatrixBFS(GraphAjdacencyMatrix g, Vertex<Integer> src, Vertex<Integer> dest) {
+        System.out.println("Form：" + src.getElement());
+        System.out.println("To: " + dest.getElement());
+
+        System.out.println("Adjacency Matrix + BFS Queue");
+        double total = 0.0;
+        double totalM = 0.0;
+
+        startTime = System.nanoTime();
+        runtime = Runtime.getRuntime();
+        BFSqueueMatrix bfsMatrix = new BFSqueueMatrix(g.matrix, g.vertex);
+        bfsMatrix.printShortestPath(src.getElement(), dest.getElement());
+        endTime = System.nanoTime();
+        total += ((endTime - startTime) / divider);
+        runtime.gc();
+        totalM += runtime.totalMemory() - runtime.freeMemory();
+
+        printInfo(total, totalM, 1);
+    }
+
+    public static void printInfo(double average, double memory, int times) {
         System.out.println("Average time taken out of " + times + " runs: " + average + "s");
         System.out.println("Used memory is megabytes: " + bytesToMegabytes(memory) + "MB");
         System.out.println("\n--------------------------------------------------\n");
     }
 
-    public static long bytesToMegabytes(long bytes) {
+    public static double bytesToMegabytes(double bytes) {
         return bytes / MEGABYTE;
     }
 

@@ -31,6 +31,7 @@ public class UserInterface {
     JTextField toIdInput;
     JComboBox<String> dsBox;
     JComboBox<String> algoBox;
+    JSONParser parser = new JSONParser();
 
     JTextArea resultArea;
 
@@ -69,14 +70,78 @@ public class UserInterface {
         Action singleConnection = new AbstractAction("Single Connection") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                fromId = fromIdInput.getText();
-                toId = toIdInput.getText();
+                JSONArray users = null;
+                try (Reader reader = new FileReader("data/1k.json")) {
+                    users = (JSONArray) parser.parse(reader);
+                } catch (Exception exc) {
+                    exc.printStackTrace();
+                }
+
+                // Map unique integer to user_id
+                HashMap<Integer, String> mapList = new HashMap<>();
+                // Map user_id to unique integer
+                HashMap<String, Vertex<Integer>> verts = new HashMap<>();
+                Graph<Integer, Integer> g = new AdjacencyMapGraph<>(false);
+
+                // Find the unique user_ids
+                TreeSet<String> labels = getLabels(users);
+                Integer n = 0;
+                for (String label : labels) {
+                    mapList.put(n, label);
+                    verts.put(label, g.insertVertex(n++));
+                }
+
+                Vertex<Integer> src = verts.get(fromIdInput.getText());
+                Vertex<Integer> dest = verts.get(toIdInput.getText());
+
+                RunInput inputExperiments = new RunInput(verts, mapList);
+                resultArea.setText("");
+                JTextAreaOutputStream out = new JTextAreaOutputStream(resultArea);
+                System.setOut(new PrintStream(out));
+
                 ds = dsBox.getSelectedItem().toString();
                 algo = algoBox.getSelectedItem().toString();
-                System.out.println("From:" + fromId);
-                System.out.println("To: " + toId);
-                System.out.println("Data Structure: " + ds);
-                System.out.println("Algo: " + algo);
+                if (ds.equals("BFS")) {
+                    switch (ds) {
+                    case "Ajdacency Map":
+                        Graph<Integer, Integer> adjMap = generateAdjacencyMapFromData(users, g, verts);
+                        inputExperiments.runMapBFS(adjMap, src, dest);
+                        break;
+                    case "Ajdacency List":
+                        List<List<Integer>> adjList = generateAdjacencyListFromData(users, verts).getGraph();
+                        inputExperiments.runListBFS(adjList, src, dest);
+                        break;
+                    case "Ajdacency Matrix":
+                        try {
+                            GraphAjdacencyMatrix adjMatrix = generateAdjacencyMatrixFromData(users, verts);
+                            inputExperiments.runMatrixBFS(adjMatrix, src, dest);
+                        } catch (OutOfMemoryError ot) {
+                            System.out.println("Memory out of heap");
+                        }
+                        break;
+                    default:
+                    }
+                } else if (ds.equals("Djikstra Algo")) {
+                    switch (ds) {
+                    case "Ajdacency Map":
+                        Graph<Integer, Integer> adjMap = generateAdjacencyMapFromData(users, g, verts);
+                        inputExperiments.runMapDjikstra(adjMap, src, dest);
+                        break;
+                    case "Ajdacency List":
+                        List<List<Integer>> adjList = generateAdjacencyListFromData(users, verts).getGraph();
+                        inputExperiments.runListDjikstra(adjList, src, dest);
+                        break;
+                    case "Ajdacency Matrix":
+                        try {
+                            GraphAjdacencyMatrix adjMatrix = generateAdjacencyMatrixFromData(users, verts);
+                            inputExperiments.runMatrixDjikstra(adjMatrix, src, dest);
+                        } catch (OutOfMemoryError ot) {
+                            System.out.println("Memory out of heap");
+                        }
+                        break;
+                    default:
+                    }
+                }
             }
         };
 
@@ -87,7 +152,6 @@ public class UserInterface {
         Action inputTest = new AbstractAction("Input Test") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JSONParser parser = new JSONParser();
                 JSONArray users = null;
                 try (Reader reader = new FileReader("data/1k.json")) {
                     users = (JSONArray) parser.parse(reader);
@@ -128,14 +192,14 @@ public class UserInterface {
                 inputExperiments.runListDjikstra(adjList, times);
                 inputExperiments.runListBFS(adjList, times);
 
-                try{
+                try {
                     GraphAjdacencyMatrix adjMatrix = generateAdjacencyMatrixFromData(users, verts);
                     inputExperiments.runMatrixDjikstra(adjMatrix, times);
                     inputExperiments.runMatrixBFS(adjMatrix, times);
                 } catch (OutOfMemoryError ot) {
                     System.out.println("Memory out of heap");
                 }
-                
+
             }
         };
 
@@ -146,7 +210,6 @@ public class UserInterface {
         Action inAlgoTest = new AbstractAction("In Algo Test") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JSONParser parser = new JSONParser();
                 JSONObject data = null;
                 TreeSet<String> labels;
 
@@ -275,7 +338,6 @@ public class UserInterface {
             userData[n][1] = label;
             mapList.put(n, label);
             verts.put(label, g.insertVertex(n++));
-
         }
 
         JPanel userPanel = new JPanel();
