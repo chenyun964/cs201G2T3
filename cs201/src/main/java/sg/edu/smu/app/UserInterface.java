@@ -71,7 +71,7 @@ public class UserInterface {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JSONArray users = null;
-                try (Reader reader = new FileReader("data/1k.json")) {
+                try (Reader reader = new FileReader("data/500.json")) {
                     users = (JSONArray) parser.parse(reader);
                 } catch (Exception exc) {
                     exc.printStackTrace();
@@ -154,7 +154,7 @@ public class UserInterface {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JSONArray users = null;
-                try (Reader reader = new FileReader("data/1k.json")) {
+                try (Reader reader = new FileReader("data/300.json")) {
                     users = (JSONArray) parser.parse(reader);
                 } catch (Exception exc) {
                     exc.printStackTrace();
@@ -212,7 +212,6 @@ public class UserInterface {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JSONObject data = null;
-                TreeSet<String> labels;
 
                 try (Reader reader = new FileReader("data/sample3.json")) {
                     data = (JSONObject) parser.parse(reader);
@@ -220,7 +219,7 @@ public class UserInterface {
                     exc.printStackTrace();
                 }
 
-                labels = new TreeSet<>();
+                TreeSet<String> labels = new TreeSet<>();
                 for (Object key : data.keySet()) {
                     labels.add((String) key);
                     JSONArray values = (JSONArray) data.get(key);
@@ -235,9 +234,6 @@ public class UserInterface {
                     uniqueList.put(label, n++);
                 }
 
-                // List<Integer> keyLists = new ArrayList<>(uniqueList.values());
-                // int id1 = keyLists.get(new Random().nextInt(keyLists.size()));
-                // int id2 = keyLists.get(new Random().nextInt(keyLists.size()));
                 int id1 = uniqueList.get("YiSFCdyb0dJQrSAGRzkzAw");
                 int id2 = uniqueList.get("dxqHh0JYQg9_X7whNAWWVA");
 
@@ -320,7 +316,7 @@ public class UserInterface {
 
         JSONParser parser = new JSONParser();
         JSONArray users = null;
-        try (Reader reader = new FileReader("data/1k.json")) {
+        try (Reader reader = new FileReader("data/500.json")) {
             users = (JSONArray) parser.parse(reader);
         } catch (Exception e) {
             e.printStackTrace();
@@ -344,6 +340,7 @@ public class UserInterface {
             verts.put(label, g.insertVertex(n++));
         }
 
+        JLabel userTableLbale = new JLabel("User List");
         JPanel userPanel = new JPanel();
         JTable userTable = new JTable(userData, userColumnNames);
         userPanel.setLayout(new GridLayout(0, 1));
@@ -353,22 +350,13 @@ public class UserInterface {
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), BorderLayout.CENTER);
 
         JPanel resultPanel = new JPanel();
-        // String[] columnsNames = { "To", "Form", "Time Taken", "Space Used" };
-        // Object[][] data = { { "Katty", "Smith", "SnowBoard", 5 }, { "Jhon", "Doe",
-        // "Rowing", 3 },
-        // { "Sue", "Black", "Knitting", 2 }, { "Jane", "White", "Speed ride", 20 } };
-
-        // JTable table = new JTable(data, columnsNames);
         resultPanel.setLayout(new GridLayout(0, 1));
-        // resultPanel.add(table.getTableHeader());
-        // resultPanel.add(table);
         resultPanel.add(new JScrollPane(resultArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), BorderLayout.CENTER);
 
         frame.add(formPanel);
         frame.add(resultPanel);
         frame.add(userPanel);
-        // frame.add(graph);
 
         // Adding Components to the frame.
         frame.getContentPane().add(BorderLayout.NORTH, formPanel);
