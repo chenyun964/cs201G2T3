@@ -8,6 +8,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import sg.edu.smu.app.experiments.RunDJI;
+import sg.edu.smu.app.experiments.RunInput;
 
 import sg.edu.smu.app.datastructures.CustomNode;
 import sg.edu.smu.app.datastructures.AdjacencyMapGraph;
@@ -86,14 +87,55 @@ public class UserInterface {
         Action inputTest = new AbstractAction("Input Test") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                fromId = fromIdInput.getText();
-                toId = toIdInput.getText();
-                ds = dsBox.getSelectedItem().toString();
-                algo = algoBox.getSelectedItem().toString();
-                System.out.println("From:" + fromId);
-                System.out.println("To: " + toId);
-                System.out.println("Data Structure: " + ds);
-                System.out.println("Algo: " + algo);
+                JSONParser parser = new JSONParser();
+                JSONArray users = null;
+                try (Reader reader = new FileReader("data/1k.json")) {
+                    users = (JSONArray) parser.parse(reader);
+                } catch (Exception exc) {
+                    exc.printStackTrace();
+                }
+
+                // Map unique integer to user_id
+                HashMap<Integer, String> mapList = new HashMap<>();
+                // Map user_id to unique integer
+                HashMap<String, Vertex<Integer>> verts = new HashMap<>();
+                Graph<Integer, Integer> g = new AdjacencyMapGraph<>(false);
+
+                // Find the unique user_ids
+                TreeSet<String> labels = getLabels(users);
+                Integer n = 0;
+                for (String label : labels) {
+                    mapList.put(n, label);
+                    verts.put(label, g.insertVertex(n++));
+                }
+
+                labels = null;
+                n = null;
+
+                System.out.println("Data size: " + mapList.size());
+
+                int times = 10;
+                RunInput inputExperiments = new RunInput(verts, mapList);
+                resultArea.setText("");
+                JTextAreaOutputStream out = new JTextAreaOutputStream(resultArea);
+                System.setOut(new PrintStream(out));
+
+                Graph<Integer, Integer> adjMap = generateAdjacencyMapFromData(users, g, verts);
+                inputExperiments.runMapDjikstra(adjMap, times);
+                inputExperiments.runMapBFS(adjMap, times);
+
+                List<List<Integer>> adjList = generateAdjacencyListFromData(users, verts).getGraph();
+                inputExperiments.runListDjikstra(adjList, times);
+                inputExperiments.runListBFS(adjList, times);
+
+                try{
+                    GraphAjdacencyMatrix adjMatrix = generateAdjacencyMatrixFromData(users, verts);
+                    inputExperiments.runMatrixDjikstra(adjMatrix, times);
+                    inputExperiments.runMatrixBFS(adjMatrix, times);
+                } catch (OutOfMemoryError ot) {
+                    System.out.println("Memory out of heap");
+                }
+                
             }
         };
 
@@ -129,14 +171,9 @@ public class UserInterface {
                     uniqueList.put(label, n++);
                 }
 
-                int id1 = uniqueList.get("YiSFCdyb0dJQrSAGRzkzAw");
-                int id2 = uniqueList.get("dxqHh0JYQg9_X7whNAWWVA");
-                // List<Integer> keyLists = new ArrayList<>(uniqueList.values());
-                // int id1 = keyLists.get(new Random().nextInt(keyLists.size()));
-                // int id2 = keyLists.get(new Random().nextInt(keyLists.size()));
-
-                System.out.println(id1);
-                System.out.println(id2);
+                List<Integer> keyLists = new ArrayList<>(uniqueList.values());
+                int id1 = keyLists.get(new Random().nextInt(keyLists.size()));
+                int id2 = keyLists.get(new Random().nextInt(keyLists.size()));
 
                 Map<Integer, List<CustomNode>> adjMap = new HashMap<>();
 
@@ -153,13 +190,14 @@ public class UserInterface {
                     }
                 }
 
-                // memory clearing
                 int numVertices = adjMap.size();
+
                 int times = 10;
                 RunDJI djiExperiments = new RunDJI();
                 resultArea.setText("");
-                JTextAreaOutputStream out = new JTextAreaOutputStream (resultArea);
-                System.setOut(new PrintStream (out));
+                JTextAreaOutputStream out = new JTextAreaOutputStream(resultArea);
+                System.setOut(new PrintStream(out));
+
                 /**
                  * Adjacency Map + Djikstra PQ
                  */
@@ -213,10 +251,9 @@ public class UserInterface {
         formPanel.add(inputTestBtn);
         formPanel.add(inAlgoTestBtn);
 
-
         JSONParser parser = new JSONParser();
         JSONArray users = null;
-        try (Reader reader = new FileReader("data/100.json")) {
+        try (Reader reader = new FileReader("data/1k.json")) {
             users = (JSONArray) parser.parse(reader);
         } catch (Exception e) {
             e.printStackTrace();
@@ -231,14 +268,14 @@ public class UserInterface {
         // Find the unique user_ids
         TreeSet<String> labels = getLabels(users);
         Integer n = 0;
-        String[] userColumnNames = {"#", "User ID"};
+        String[] userColumnNames = { "#", "User ID" };
         Object[][] userData = new Object[labels.size()][2];
         for (String label : labels) {
             userData[n][0] = n;
             userData[n][1] = label;
             mapList.put(n, label);
             verts.put(label, g.insertVertex(n++));
-            
+
         }
 
         JPanel userPanel = new JPanel();
@@ -246,28 +283,21 @@ public class UserInterface {
         userPanel.setLayout(new GridLayout(0, 1));
         userPanel.add(userTable.getTableHeader());
         userPanel.add(userTable);
-        userPanel.add(new JScrollPane (
-            userTable, 
-            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, 
-            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED),
-            BorderLayout.CENTER);
-
-
+        userPanel.add(new JScrollPane(userTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), BorderLayout.CENTER);
 
         JPanel resultPanel = new JPanel();
         // String[] columnsNames = { "To", "Form", "Time Taken", "Space Used" };
-        // Object[][] data = { { "Katty", "Smith", "SnowBoard", 5 }, { "Jhon", "Doe", "Rowing", 3 },
-        //         { "Sue", "Black", "Knitting", 2 }, { "Jane", "White", "Speed ride", 20 } };
+        // Object[][] data = { { "Katty", "Smith", "SnowBoard", 5 }, { "Jhon", "Doe",
+        // "Rowing", 3 },
+        // { "Sue", "Black", "Knitting", 2 }, { "Jane", "White", "Speed ride", 20 } };
 
         // JTable table = new JTable(data, columnsNames);
         resultPanel.setLayout(new GridLayout(0, 1));
         // resultPanel.add(table.getTableHeader());
         // resultPanel.add(table);
-        resultPanel.add(new JScrollPane (
-            resultArea, 
-            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, 
-            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED),
-            BorderLayout.CENTER);
+        resultPanel.add(new JScrollPane(resultArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), BorderLayout.CENTER);
 
         frame.add(formPanel);
         frame.add(resultPanel);
@@ -294,6 +324,59 @@ public class UserInterface {
             }
         }
         return labels;
+    }
+
+    public static Graph<Integer, Integer> generateAdjacencyMapFromData(JSONArray users, Graph<Integer, Integer> g,
+            HashMap<String, Vertex<Integer>> verts) {
+
+        for (Object u : users) {
+            JSONObject user = (JSONObject) u;
+            String user_id = (String) user.get("user_id");
+            String friendString = (String) user.get("friends");
+            String[] friends = friendString.replace(" ", "").split(",");
+            for (String s : friends) {
+                if (g.getEdge(verts.get(user_id), verts.get(s)) == null) {
+                    g.insertEdge(verts.get(user_id), verts.get(s), 1);
+                }
+            }
+        }
+        return g;
+    }
+
+    public static GraphAjdacencyList generateAdjacencyListFromData(JSONArray users,
+            HashMap<String, Vertex<Integer>> userToInt) {
+
+        GraphAjdacencyList ajdList = new GraphAjdacencyList(userToInt.size());
+
+        for (Object u : users) {
+            JSONObject user = (JSONObject) u;
+            Integer id = userToInt.get(user.get("user_id")).getElement();
+            String friendString = (String) user.get("friends");
+            String[] friends = friendString.replace(" ", "").split(",");
+            for (String s : friends) {
+                ajdList.addEdge(id, userToInt.get(s).getElement());
+            }
+        }
+
+        return ajdList;
+    }
+
+    public static GraphAjdacencyMatrix generateAdjacencyMatrixFromData(JSONArray users,
+            HashMap<String, Vertex<Integer>> userToInt) {
+
+        GraphAjdacencyMatrix ajdMatrix = new GraphAjdacencyMatrix(userToInt.size());
+
+        for (Object u : users) {
+            JSONObject user = (JSONObject) u;
+            Integer id = userToInt.get(user.get("user_id")).getElement();
+            String friendString = (String) user.get("friends");
+            String[] friends = friendString.replace(" ", "").split(",");
+            for (String s : friends) {
+                ajdMatrix.addEdge(id, userToInt.get(s).getElement());
+            }
+        }
+
+        return ajdMatrix;
     }
 
 }
