@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Arrays;
 
 public class BFSqueueMatrix {
-    private int[][] graph;
+    private boolean[][] graph;
     private int v;
 
-    public BFSqueueMatrix(int[][] graph, int v) {
+    public BFSqueueMatrix(boolean[][] graph, int v) {
         this.graph = graph;
         this.v = v;
     }
@@ -31,7 +31,7 @@ public class BFSqueueMatrix {
             int current = queue.remove();
             // Loop through neighbors nodes to find the 'dest' node
             for (int i = 0; i < v; i++) {
-                if (!visited[i] && graph[current][i] == 1) {
+                if (!visited[i] && graph[current][i]) {
                     visited[i] = true;
                     dist[i] = dist[current] + 1;
                     queue.add(i);

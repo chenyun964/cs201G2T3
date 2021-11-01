@@ -6,10 +6,10 @@ import java.util.LinkedList;
 import sg.edu.smu.app.datastructures.CustomNode;
 
 public class DijkstraMatrix {
-    int[][] graph;
+    boolean[][] graph;
     int numVertices;
 
-    public DijkstraMatrix(int[][] graph) {
+    public DijkstraMatrix(boolean[][] graph) {
         this.graph = graph;
         this.numVertices = graph.length;
     }
@@ -33,7 +33,7 @@ public class DijkstraMatrix {
             if (current == dest)
                 return true;
             for (int i = 0; i < numVertices; i++) {
-                if (!visited[i] && graph[current][i] == 1) {
+                if (!visited[i] && graph[current][i]) {
                     dist[i] = dist[current] + 1;
                     pred[i] = current;
                     visited[i] = true;

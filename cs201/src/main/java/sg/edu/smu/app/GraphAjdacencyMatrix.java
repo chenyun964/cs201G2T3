@@ -2,19 +2,19 @@ package sg.edu.smu.app;
 
 public class GraphAjdacencyMatrix {
     public int vertex;
-    public int[][] matrix;
+    public boolean[][] matrix;
 
     public GraphAjdacencyMatrix(int vertex) {
         this.vertex = vertex;
-        matrix = new int[vertex][vertex];
+        matrix = new boolean[vertex][vertex];
     }
 
     public void addEdge(int source, int destination) {
         // add edge
-        matrix[source][destination] = 1;
+        matrix[source][destination] = true;
 
         // add bak edge for undirected graph
-        matrix[destination][source] = 1;
+        matrix[destination][source] = true;
     }
 
     public void printGraph() {
@@ -28,7 +28,7 @@ public class GraphAjdacencyMatrix {
         for (int i = 0; i < vertex; i++) {
             System.out.print("Vertex " + i + " is connected to:");
             for (int j = 0; j < vertex; j++) {
-                if (matrix[i][j] == 1) {
+                if (matrix[i][j]) {
                     System.out.print(j + " ");
                 }
             }
