@@ -36,7 +36,7 @@ There are three buttons in the application:
 - Bottom Left is the user list
 - Bottom Right will display the result of the action
 
-[^1]:Do take note that if you selected a big dataset and a large number of time to run Input and Data Structure Test, the program will probably hang for a while as it takes sometime to compute the different test cases.
+[^1]:Do take note that if you selected a big dataset and a large number of time to run Input and Data Structure Test, the program will probably hang for a while as it takes some time to compute the different test cases.
 
 # Data
 All data sets are stored inside the `data` Folder. You may use the dropdown in the application to select which dataset is going to be used for testing.
