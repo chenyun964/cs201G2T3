@@ -157,7 +157,7 @@ public class RunInput {
     }
 
     public void runMapDjikstra(Graph<Integer, Integer> g, Vertex<Integer> src, Vertex<Integer> dest) {
-        System.out.println("Form：" + src.getElement());
+        System.out.println("Form: " + src.getElement());
         System.out.println("To: " + dest.getElement());
         
         System.out.println("Adjacency Map + Djikstra PQ");
@@ -177,7 +177,7 @@ public class RunInput {
     }
 
     public void runMapBFS(Graph<Integer, Integer> g, Vertex<Integer> src, Vertex<Integer> dest) {
-        System.out.println("Form：" + src.getElement());
+        System.out.println("Form: " + src.getElement());
         System.out.println("To: " + dest.getElement());
 
         System.out.println("Adjacency Map + BFS Queue");
@@ -197,7 +197,7 @@ public class RunInput {
     }
 
     public void runListDjikstra(List<List<Integer>> g, Vertex<Integer> src, Vertex<Integer> dest) {
-        System.out.println("Form：" + src.getElement());
+        System.out.println("Form: " + src.getElement());
         System.out.println("To: " + dest.getElement());
 
         System.out.println("Adjacency List + Dijkstra PQ");
@@ -217,7 +217,7 @@ public class RunInput {
     }
 
     public void runListBFS(List<List<Integer>> g, Vertex<Integer> src, Vertex<Integer> dest) {
-        System.out.println("Form：" + src.getElement());
+        System.out.println("Form: " + src.getElement());
         System.out.println("To: " + dest.getElement());
 
         System.out.println("Adjacency List + BFS Queue");
@@ -237,7 +237,7 @@ public class RunInput {
     }
 
     public void runMatrixDjikstra(GraphAjdacencyMatrix g, Vertex<Integer> src, Vertex<Integer> dest) {
-        System.out.println("Form：" + src.getElement());
+        System.out.println("Form: " + src.getElement());
         System.out.println("To: " + dest.getElement());
 
         System.out.println("Adjacency Matrix + Dijkstra PQ");
@@ -257,7 +257,7 @@ public class RunInput {
     }
 
     public void runMatrixBFS(GraphAjdacencyMatrix g, Vertex<Integer> src, Vertex<Integer> dest) {
-        System.out.println("Form：" + src.getElement());
+        System.out.println("Form: " + src.getElement());
         System.out.println("To: " + dest.getElement());
 
         System.out.println("Adjacency Matrix + BFS Queue");

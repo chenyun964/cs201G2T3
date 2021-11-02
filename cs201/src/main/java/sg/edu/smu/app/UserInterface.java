@@ -33,6 +33,9 @@ public class UserInterface {
     JComboBox<String> algoBox;
     JSONParser parser = new JSONParser();
 
+    String dataPath = "data/100.json";
+    int times = 10;
+
     JTextArea resultArea;
 
     public void createUI() {
@@ -63,7 +66,7 @@ public class UserInterface {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JSONArray users = null;
-                try (Reader reader = new FileReader("data/300.json")) {
+                try (Reader reader = new FileReader(dataPath)) {
                     users = (JSONArray) parser.parse(reader);
                 } catch (Exception exc) {
                     exc.printStackTrace();
@@ -146,7 +149,7 @@ public class UserInterface {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JSONArray users = null;
-                try (Reader reader = new FileReader("data/300.json")) {
+                try (Reader reader = new FileReader(dataPath)) {
                     users = (JSONArray) parser.parse(reader);
                 } catch (Exception exc) {
                     exc.printStackTrace();
@@ -169,28 +172,28 @@ public class UserInterface {
                 labels = null;
                 n = null;
 
-                int times = 10;
+
                 
                 // Run fixed testing with a sample size of 10
-                Object[][] testSample = {
-                    {"Dbu4K86H0CrGnBy_y0_63g", "343K-LPawvplmuCvr7eOCg"},
-                    {"UQtSDCRIZUKSZGyTvl0V6A", "AgCExWQ84NuDc3tju64hCA"},
-                    {"0BIhsZPZiETZKkaEmBXvJw", "qhglDnh-9476eCbXP_5iRA"},
-                    {"MGXNCkynlb1KIdpBEJFpRA", "-SaUH70o8_wV9Y3LSZIffw"},
-                    {"yTF3Mjvase9wNJ81xs4Seg", "U2oc0H5t8vV2YyllSFCAkg"},
-                    {"A1OCYUfcyU90_LlJyzMOLw", "0K5T6ZHxCtxTq2342ZI8Tg"},
-                    {"y-ThVDgGSozgomnMRuuDGQ", "rTcpmRg8SRnZtebGWfk9Qw"},
-                    {"m6dN--8obTQ4iqrBLqk_2Q", "BvuHHm5QLEfxxwOXUtKpkg"},
-                    {"A1OCYUfcyU90_LlJyzMOLw", "0K5T6ZHxCtxTq2342ZI8Tg"},
-                    {"m6dN--8obTQ4iqrBLqk_2Q", "rTcpmRg8SRnZtebGWfk9Qw"}
-                };
+                // Object[][] testSample = {
+                //     {"Dbu4K86H0CrGnBy_y0_63g", "343K-LPawvplmuCvr7eOCg"},
+                //     {"UQtSDCRIZUKSZGyTvl0V6A", "AgCExWQ84NuDc3tju64hCA"},
+                //     {"0BIhsZPZiETZKkaEmBXvJw", "qhglDnh-9476eCbXP_5iRA"},
+                //     {"MGXNCkynlb1KIdpBEJFpRA", "-SaUH70o8_wV9Y3LSZIffw"},
+                //     {"yTF3Mjvase9wNJ81xs4Seg", "U2oc0H5t8vV2YyllSFCAkg"},
+                //     {"A1OCYUfcyU90_LlJyzMOLw", "0K5T6ZHxCtxTq2342ZI8Tg"},
+                //     {"y-ThVDgGSozgomnMRuuDGQ", "rTcpmRg8SRnZtebGWfk9Qw"},
+                //     {"m6dN--8obTQ4iqrBLqk_2Q", "BvuHHm5QLEfxxwOXUtKpkg"},
+                //     {"A1OCYUfcyU90_LlJyzMOLw", "0K5T6ZHxCtxTq2342ZI8Tg"},
+                //     {"m6dN--8obTQ4iqrBLqk_2Q", "rTcpmRg8SRnZtebGWfk9Qw"}
+                // };
                 
                 // Run Random testing
-                // Object[][] testSample = new Object[times][2];
-                // for (int i = 0; i < times; i++) {
-                //     testSample[i][0] = mapList.get(new Random().nextInt(mapList.size()));
-                //     testSample[i][1] = mapList.get(new Random().nextInt(mapList.size()));
-                // }
+                Object[][] testSample = new Object[times][2];
+                for (int i = 0; i < times; i++) {
+                    testSample[i][0] = mapList.get(new Random().nextInt(mapList.size()));
+                    testSample[i][1] = mapList.get(new Random().nextInt(mapList.size()));
+                }
 
                 RunInput inputExperiments = new RunInput(verts, mapList);
                 resultArea.setText("");
@@ -267,7 +270,6 @@ public class UserInterface {
                 int numVertices = adjMap.size();
                 System.out.println(numVertices);
 
-                int times = 10;
                 RunDJI djiExperiments = new RunDJI();
                 resultArea.setText("");
                 JTextAreaOutputStream out = new JTextAreaOutputStream(resultArea);
@@ -330,7 +332,7 @@ public class UserInterface {
 
         JSONParser parser = new JSONParser();
         JSONArray users = null;
-        try (Reader reader = new FileReader("data/300.json")) {
+        try (Reader reader = new FileReader(dataPath)) {
             users = (JSONArray) parser.parse(reader);
         } catch (Exception e) {
             e.printStackTrace();
