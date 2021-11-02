@@ -24,7 +24,20 @@ Install the dependencies included in the POM.XML, complie codes into package and
 
 Clear all installed dependencies and re-install the dependencies in the POM.XML. Complie codes into package and really for launch
 
+# Use Guide
+There are three buttons in the application:
+
+1. Connect - Find the shortest path between two given user. You can use the user list on the left side to enter the user id
+2. Input Test - Test the different input graphs with BFS and Dijkstra Algo
+3. Data Structure Test - Test how different data structures in Dijkstra Algo will affect the algorithm 
+
+Bottom Left is the user list
+Bottom right will display the result of the action
+
 # Data
-All data sets are stored in side `data` Folder
+All data sets are stored inside the `data` Folder. 
+Open `Userinterface.java` to change the dataset that you would like to test on and also the number of times to run the Input and Data Structure Test
+
+Do take note that ajdacency matrix will take up a lot of memory space, here is a draft table
 
 
