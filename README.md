@@ -25,7 +25,7 @@ Install the dependencies included in the POM.XML, complie codes into package and
 Clear all installed dependencies and re-install the dependencies in the POM.XML. Complie codes into package and really for launch
 
 # Use Guide
-![Screenshot](https://user-images.githubusercontent.com/32857830/139798278-037e5e20-7523-4101-a964-17d4fa8920d6.png)
+![Screenshot](https://user-images.githubusercontent.com/32857830/139798346-1c81e102-1297-422b-94e2-5ccd453ed8d2.png)
 
 There are three buttons in the application:
 
