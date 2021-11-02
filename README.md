@@ -31,8 +31,8 @@ There are three buttons in the application:
 2. Input Test - Test the different input graphs with BFS and Dijkstra Algo
 3. Data Structure Test - Test how different data structures in Dijkstra Algo will affect the algorithm 
 
-Bottom Left is the user list
-Bottom right will display the result of the action
+- Bottom Left is the user list
+- Bottom right will display the result of the action
 
 * Do take note that if you selected a big dataset and a large number of time to run Input and Data Structure Test, the program will probably hang for a while as it takes sometime to compute the different test cases.
 
@@ -42,11 +42,15 @@ Open `Userinterface.java` to change the dataset that you would like to test on a
 
 Do take note that ajdacency matrix will take up a lot of memory space
 Here is a table for memoery used for ajdacency matrix:
-
 | Dataset | Number of Unique users | Estimated Heap Memory Used |
 | ----------- | ----------- | ----------- |
 | 100.json | ~10k | ~115MB |
 | 300.json | ~32k | ~1042MB |
 | 500.json | ~53k | ~2760MB |
-| 1k.json | ~95k | Out of Memory |
+| 1k.json | ~95k | ~9025MB |
+| 5k.json | ~440k | ~19GB |
+| 10k.json | ~821k | ~67GB |
+| 250k.json | ~880k | ~77GB |
+
+The default dataset used is `100.json`, you may based on your computer's capacity and select diffeent dataset for testing.
 
