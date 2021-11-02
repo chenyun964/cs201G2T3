@@ -25,6 +25,8 @@ Install the dependencies included in the POM.XML, complie codes into package and
 Clear all installed dependencies and re-install the dependencies in the POM.XML. Complie codes into package and really for launch
 
 # Use Guide
+![Screenshot](https://user-images.githubusercontent.com/32857830/139798278-037e5e20-7523-4101-a964-17d4fa8920d6.png)
+
 There are three buttons in the application:
 
 1. Connect - Find the shortest path between two given user. You can use the user list on the left side to enter the user id
