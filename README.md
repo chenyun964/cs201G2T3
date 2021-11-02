@@ -31,7 +31,7 @@ There are three buttons in the application:
 
 1. Connect - Find the shortest path between two given user. You can use the user list on the left side to enter the user id
 2. Input Test[^1] - Test the different input graphs with BFS and Dijkstra Algo
-3. Data Structure Test[^1] - Test how different data structures in Dijkstra Algo will affect the algorithm 
+3. Data Structure Test[^1] - Test how different data structures in Dijkstra Algo (LL+HM, Min Stack etc..) will affect the algorithm 
 
 - Bottom Left is the user list
 - Bottom Right will display the result of the action
