@@ -21,6 +21,7 @@ import java.util.*;
 import java.util.List;
 
 import java.io.PrintStream;
+import java.awt.event.*;
 
 public class UserInterface {
     String fromId;
@@ -31,9 +32,15 @@ public class UserInterface {
     JTextField toIdInput;
     JComboBox<String> dsBox;
     JComboBox<String> algoBox;
+    JTable userTable;
     JSONParser parser = new JSONParser();
 
+    // Path to dataset
+    JComboBox<String> dataBox;
     String dataPath = "data/100.json";
+
+    // Number of times to run for Input and Data Structure test
+    JTextField timeInput;
     int times = 10;
 
     JTextArea resultArea;
@@ -59,6 +66,47 @@ public class UserInterface {
         JLabel algoLabel = new JLabel("Algorithm");
         String[] algoChoices = { "BFS", "Djikstra Algo" };
         algoBox = new JComboBox<String>(algoChoices);
+
+        JLabel dataLabel = new JLabel("Dataset");
+        String[] dataChoices = { "100.json", "300.json", "500.json", "1k.json", "5k.json", "10k.json", "250k.json"};
+        dataBox = new JComboBox<String>(dataChoices);
+        dataBox.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    dataPath = "data/" + e.getItem();
+                    fromIdInput.setText("");
+                    toIdInput.setText("");
+
+                    JSONArray users = null;
+                    try (Reader reader = new FileReader(dataPath)) {
+                        users = (JSONArray) parser.parse(reader);
+                    } catch (Exception exc) {
+                        exc.printStackTrace();
+                    }
+
+                    // Map unique integer to user_id
+                    HashMap<Integer, String> mapList = new HashMap<>();
+                    // Map user_id to unique integer
+                    HashMap<String, Vertex<Integer>> verts = new HashMap<>();
+                    Graph<Integer, Integer> g = new AdjacencyMapGraph<>(false);
+
+                    // Find the unique user_ids
+                    TreeSet<String> labels = getLabels(users);
+                    Integer n = 0;
+                    Object[][] userData = new Object[labels.size()][2];
+                    for (String label : labels) {
+                        userData[n][0] = n;
+                        userData[n][1] = label;
+                        mapList.put(n, label);
+                        verts.put(label, g.insertVertex(n++));
+                    }
+
+                    UserTableModel model = (UserTableModel) userTable.getModel();
+                    model.setData(userData);
+                }
+            }
+        });
+
         resultArea = new JTextArea();
 
         JButton sendBtn = new JButton("Connect");
@@ -172,22 +220,21 @@ public class UserInterface {
                 labels = null;
                 n = null;
 
-
-                
                 // Run fixed testing with a sample size of 10
                 // Object[][] testSample = {
-                //     {"Dbu4K86H0CrGnBy_y0_63g", "343K-LPawvplmuCvr7eOCg"},
-                //     {"UQtSDCRIZUKSZGyTvl0V6A", "AgCExWQ84NuDc3tju64hCA"},
-                //     {"0BIhsZPZiETZKkaEmBXvJw", "qhglDnh-9476eCbXP_5iRA"},
-                //     {"MGXNCkynlb1KIdpBEJFpRA", "-SaUH70o8_wV9Y3LSZIffw"},
-                //     {"yTF3Mjvase9wNJ81xs4Seg", "U2oc0H5t8vV2YyllSFCAkg"},
-                //     {"A1OCYUfcyU90_LlJyzMOLw", "0K5T6ZHxCtxTq2342ZI8Tg"},
-                //     {"y-ThVDgGSozgomnMRuuDGQ", "rTcpmRg8SRnZtebGWfk9Qw"},
-                //     {"m6dN--8obTQ4iqrBLqk_2Q", "BvuHHm5QLEfxxwOXUtKpkg"},
-                //     {"A1OCYUfcyU90_LlJyzMOLw", "0K5T6ZHxCtxTq2342ZI8Tg"},
-                //     {"m6dN--8obTQ4iqrBLqk_2Q", "rTcpmRg8SRnZtebGWfk9Qw"}
+                // {"Dbu4K86H0CrGnBy_y0_63g", "343K-LPawvplmuCvr7eOCg"},
+                // {"UQtSDCRIZUKSZGyTvl0V6A", "AgCExWQ84NuDc3tju64hCA"},
+                // {"0BIhsZPZiETZKkaEmBXvJw", "qhglDnh-9476eCbXP_5iRA"},
+                // {"MGXNCkynlb1KIdpBEJFpRA", "-SaUH70o8_wV9Y3LSZIffw"},
+                // {"yTF3Mjvase9wNJ81xs4Seg", "U2oc0H5t8vV2YyllSFCAkg"},
+                // {"A1OCYUfcyU90_LlJyzMOLw", "0K5T6ZHxCtxTq2342ZI8Tg"},
+                // {"y-ThVDgGSozgomnMRuuDGQ", "rTcpmRg8SRnZtebGWfk9Qw"},
+                // {"m6dN--8obTQ4iqrBLqk_2Q", "BvuHHm5QLEfxxwOXUtKpkg"},
+                // {"A1OCYUfcyU90_LlJyzMOLw", "0K5T6ZHxCtxTq2342ZI8Tg"},
+                // {"m6dN--8obTQ4iqrBLqk_2Q", "rTcpmRg8SRnZtebGWfk9Qw"}
                 // };
-                
+                times = Integer.parseInt(timeInput.getText());
+
                 // Run Random testing
                 Object[][] testSample = new Object[times][2];
                 for (int i = 0; i < times; i++) {
@@ -202,7 +249,7 @@ public class UserInterface {
 
                 Graph<Integer, Integer> adjMap = generateAdjacencyMapFromData(users, g, verts);
                 inputExperiments.runMapDjikstra(adjMap, testSample, times);
-                inputExperiments.runMapBFS(adjMap,testSample, times);
+                inputExperiments.runMapBFS(adjMap, testSample, times);
 
                 List<List<Integer>> adjList = generateAdjacencyListFromData(users, verts).getGraph();
                 inputExperiments.runListDjikstra(adjList, testSample, times);
@@ -226,8 +273,9 @@ public class UserInterface {
         Action inAlgoTest = new AbstractAction("In Algo Test") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JSONObject data = null;
+                times = Integer.parseInt(timeInput.getText());
 
+                JSONObject data = null;
                 try (Reader reader = new FileReader("data/sample3.json")) {
                     data = (JSONObject) parser.parse(reader);
                 } catch (Exception exc) {
@@ -311,7 +359,14 @@ public class UserInterface {
         inAlgoTestBtn.getActionMap().put("Enter", inAlgoTest);
         inAlgoTestBtn.addActionListener(inAlgoTest);
 
-        formPanel.setLayout(new GridLayout(7, 2, 10, 10));
+        JLabel label3 = new JLabel("Number of tests: ");
+        timeInput = new JTextField(20); // accepts upto 20 characters
+        timeInput.setText("10");
+
+        formPanel.setLayout(new GridLayout(9, 2, 10, 10));
+        formPanel.add(dataLabel);
+        formPanel.add(dataBox);
+
         formPanel.add(label1);
         formPanel.add(fromIdInput);
 
@@ -327,10 +382,12 @@ public class UserInterface {
         formPanel.add(new JLabel());
         formPanel.add(sendBtn);
 
+        formPanel.add(label3);
+        formPanel.add(timeInput);
+
         formPanel.add(inputTestBtn);
         formPanel.add(inAlgoTestBtn);
 
-        JSONParser parser = new JSONParser();
         JSONArray users = null;
         try (Reader reader = new FileReader(dataPath)) {
             users = (JSONArray) parser.parse(reader);
@@ -357,7 +414,9 @@ public class UserInterface {
         }
 
         JPanel userPanel = new JPanel();
-        JTable userTable = new JTable(userData, userColumnNames);
+        userTable = new JTable(new UserTableModel(userData, userColumnNames));
+        userTable.setCellSelectionEnabled(true);
+
         userPanel.setLayout(new GridLayout(0, 1));
         userPanel.add(userTable.getTableHeader());
         userPanel.add(userTable);
