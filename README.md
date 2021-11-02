@@ -39,11 +39,10 @@ There are three buttons in the application:
 [^1]:Do take note that if you selected a big dataset and a large number of time to run Input and Data Structure Test, the program will probably hang for a while as it takes sometime to compute the different test cases.
 
 # Data
-All data sets are stored inside the `data` Folder. 
-Open `Userinterface.java` to change the dataset that you would like to test on and also the number of times to run the Input and Data Structure Test
+All data sets are stored inside the `data` Folder. You may use the dropdown in the application to select which dataset is going to be used for testing.
 
 Do take note that ajdacency matrix will take up a lot of memory space
-Here is a table for memoery used for ajdacency matrix:
+Here is a estimation table for memoery used for ajdacency matrix:
 | Dataset | Number of Unique users | Estimated Heap Memory Used |
 | ----------- | ----------- | ----------- |
 | 100.json | ~10k | ~115MB |
