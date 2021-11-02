@@ -28,13 +28,13 @@ Clear all installed dependencies and re-install the dependencies in the POM.XML.
 There are three buttons in the application:
 
 1. Connect - Find the shortest path between two given user. You can use the user list on the left side to enter the user id
-2. Input Test - Test the different input graphs with BFS and Dijkstra Algo
-3. Data Structure Test - Test how different data structures in Dijkstra Algo will affect the algorithm 
+2. Input Test[^1] - Test the different input graphs with BFS and Dijkstra Algo
+3. Data Structure Test[^1] - Test how different data structures in Dijkstra Algo will affect the algorithm 
 
 - Bottom Left is the user list
 - Bottom right will display the result of the action
 
-* Do take note that if you selected a big dataset and a large number of time to run Input and Data Structure Test, the program will probably hang for a while as it takes sometime to compute the different test cases.
+[^1]:Do take note that if you selected a big dataset and a large number of time to run Input and Data Structure Test, the program will probably hang for a while as it takes sometime to compute the different test cases.
 
 # Data
 All data sets are stored inside the `data` Folder. 
