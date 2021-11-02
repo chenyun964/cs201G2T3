@@ -34,7 +34,7 @@ There are three buttons in the application:
 3. Data Structure Test[^1] - Test how different data structures in Dijkstra Algo will affect the algorithm 
 
 - Bottom Left is the user list
-- Bottom right will display the result of the action
+- Bottom Right will display the result of the action
 
 [^1]:Do take note that if you selected a big dataset and a large number of time to run Input and Data Structure Test, the program will probably hang for a while as it takes sometime to compute the different test cases.
 
