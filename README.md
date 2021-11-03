@@ -1,12 +1,12 @@
 # cs201G2T3
 
-In the project directory **(/cs201)**, you can run:
-
 ### Install Maven
 
 Install maven using homebrew `brew install maven` (MacOs only)
 
 https://maven.apache.org/install.html Refer this link to install in windows or linux subsystem.
+
+In the project directory, you can run:
 
 ### `mvn package`
 
