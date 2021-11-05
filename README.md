@@ -53,5 +53,5 @@ Here is a estimation table for memoery used for ajdacency matrix:
 | 10k.json | ~821k | ~67GB |
 | 250k.json | ~880k | ~77GB |
 
-The default dataset used is `100.json`, you may based on your computer's capacity and select diffeent dataset for testing.
-
+The default dataset used for input test is `100.json`, you may based on your computer's capacity and select different dataset for testing. 
+The default dataset used for data structure test is `sample.json` which can generate a dense graph and help us to see the difference between different data structure.
